@@ -1,7 +1,10 @@
 import { getBillsByFeaturedTags } from "@/features/bills/server/loaders/get-bills-by-featured-tags";
 import { getActiveCouncilSession } from "@/features/council-sessions/server/loaders/get-active-council-session";
+import { getBillsByCouncilSession } from "./get-bills-by-council-session";
 import { getFeaturedBills } from "./get-featured-bills";
 import { getPreviousSessionBills } from "./get-previous-session-bills";
+
+const MAX_PREVIEW_BILLS = 5;
 
 /**
  * トップページ用のデータを並列取得する
@@ -16,10 +19,23 @@ export async function loadHomeData() {
       getActiveCouncilSession(),
     ]);
 
+  // いまの定例会の議案（新しい順）。トップから議案一覧へ進めるようにする
+  const activeSessionBills = activeSession
+    ? await getBillsByCouncilSession(activeSession.id)
+    : [];
+  const activeSessionData = activeSession
+    ? {
+        session: activeSession,
+        bills: activeSessionBills.slice(0, MAX_PREVIEW_BILLS),
+        totalBillCount: activeSessionBills.length,
+      }
+    : null;
+
   return {
     billsByTag,
     featuredBills,
     previousSessionData,
+    activeSessionData,
     activeSessionSlug: activeSession?.slug ?? null,
   };
 }

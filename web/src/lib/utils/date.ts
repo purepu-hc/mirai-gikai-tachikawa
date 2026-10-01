@@ -46,3 +46,10 @@ export function getJapanTime(): Date {
     new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" })
   );
 }
+
+/** 日本時間の今日の日付（YYYY-MM-DD） */
+export function getJapanDateString(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Tokyo" }).format(
+    now
+  );
+}

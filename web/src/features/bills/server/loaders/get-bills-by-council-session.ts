@@ -3,10 +3,11 @@ import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/ge
 import type { DifficultyLevelEnum } from "@/features/bill-difficulty/shared/types";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import type { BillWithContent } from "../../shared/types";
+import { sortBillsByNumberDesc } from "../../shared/utils/sort-bills-by-number";
 import {
+  findBillIdsWithPublicInterview,
   findPublishedBillsByDietSession,
   findTagsByBillIds,
-  findBillIdsWithPublicInterview,
 } from "../repositories/bill-repository";
 
 /**
@@ -52,9 +53,10 @@ const _getCachedBillsByCouncilSession = unstable_cache(
       };
     });
 
-    return billsWithContent;
+    // 新しい議案（番号の大きいもの）を上にする
+    return sortBillsByNumberDesc(billsWithContent);
   },
-  ["bills-by-council-session"],
+  ["bills-by-council-session-v2"],
   {
     revalidate: 600, // 10分
     tags: [CACHE_TAGS.BILLS, CACHE_TAGS.INTERVIEW_CONFIGS],
