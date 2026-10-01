@@ -5,7 +5,10 @@ import { Header } from "@/components/header";
 import { AuthGate } from "@/components/layouts/auth-gate";
 import { Footer } from "@/components/layouts/footer/footer";
 import { MainLayout } from "@/components/layouts/main-layout";
+import { siteConfig } from "@/config/site.config";
+import { resolveGaTrackingId } from "@/lib/analytics";
 import { env } from "@/lib/env";
+import { needsAnonymousAuth } from "@/lib/feature-flags";
 import { RubyfulInitializer } from "@/lib/rubyful";
 
 export default function MainGroupLayout({
@@ -13,12 +16,17 @@ export default function MainGroupLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const gaId = resolveGaTrackingId(
+    siteConfig.features.googleAnalytics,
+    env.analytics.gaTrackingId
+  );
+
   return (
     <>
       <SpeedInsights />
-      <GoogleAnalytics gaId={env.analytics.gaTrackingId ?? ""} />
+      {gaId && <GoogleAnalytics gaId={gaId} />}
       <RubyfulInitializer />
-      <AuthGate />
+      {needsAnonymousAuth(siteConfig.features) && <AuthGate />}
 
       <MainLayout>
         <Header />

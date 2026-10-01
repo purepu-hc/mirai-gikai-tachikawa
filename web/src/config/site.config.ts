@@ -24,8 +24,8 @@ export const siteConfig = {
     "https://www.city.tachikawa.lg.jp/shigikai/gian/1007177.html",
   twitterHashtag: "みらい議会立川市", // # なし
   externalLinks: {
-    /** 問題報告先（専用フォームを用意するまでは GitHub Issues） */
-    report: "https://github.com/purepu-hc/mirai-gikai-tachikawa/issues/new",
+    /** 問題報告先（運営者の X アカウント） */
+    report: "https://x.com/pure_hotcook",
     aboutNote: "",
     donation: "https://team-mir.ai/support/donation",
     teamAbout: "https://team-mir.ai/about",
@@ -46,19 +46,17 @@ export const siteConfig = {
   /**
    * サービス運営者情報
    * 利用規約や問い合わせ先に使用します。
-   * TODO: 公開前に運営者名・問い合わせ先を確定する
    */
   operator: {
-    name: "みらい議会＠立川市 運営者（市民有志）" as string,
-    contactUrl:
-      "https://github.com/purepu-hc/mirai-gikai-tachikawa/issues" as string,
+    name: "ぷれ" as string,
+    contactUrl: "https://x.com/pure_hotcook" as string,
     /** 利用規約の準拠法・管轄裁判所（第一審の専属的合意管轄） */
     jurisdiction: "東京地方裁判所立川支部" as string,
   },
   /**
    * AI機能の有効/無効設定
    * 本番環境のコスト管理のため、機能ごとにオン/オフを切り替えられます。
-   * 立川市版は API 費用を発生させない方針のため、すべて無効にしています。
+   * 立川市版は API 費用を発生させない方針のため、AI機能はすべて無効にしています。
    */
   features: {
     /** AIチャット機能（議案への質問・テキスト選択からの質問）*/
@@ -70,5 +68,11 @@ export const siteConfig = {
      * 非公式運営など、党の公式サービスとして出さない場合は false にする。
      */
     showTeamMiraiSection: false as boolean,
+    /**
+     * Google アナリティクス（アクセス解析）
+     * true かつ環境変数 NEXT_PUBLIC_GA_TRACKING_ID が設定されている場合のみ計測する。
+     * プライバシーポリシーの記載もこの値で自動的に切り替わる。
+     */
+    googleAnalytics: false as boolean,
   },
 } as const;
