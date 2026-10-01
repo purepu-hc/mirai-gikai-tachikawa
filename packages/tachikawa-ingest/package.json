@@ -1,0 +1,22 @@
+{
+  "name": "@mirai-gikai/tachikawa-ingest",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "立川市議会の公開ページ（議案一覧）を読み取り、投入用SQLを生成する（AI不使用）",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "build-sql": "tsx src/cli.ts"
+  },
+  "dependencies": {
+    "parse5": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.5",
+    "tsx": "^4.19.1",
+    "typescript": "~5.8.0",
+    "vitest": "^3.2.4"
+  }
+}
