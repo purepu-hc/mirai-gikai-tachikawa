@@ -80,9 +80,9 @@
   --color-mirai-border-muted: #bebcbc;
 
   /* Stance semantic colors */
-  --color-stance-for-bg: #ecfcf1;
-  --color-stance-for-badge-start: #e2f6f3;
-  --color-stance-for-badge-end: #eef6e2;
+  --color-stance-for-bg: #eef5e4;
+  --color-stance-for-badge-start: #e8f1d6;
+  --color-stance-for-badge-end: #f2f7e8;
   --color-stance-against: #c9272a;
   --color-stance-against-light: #d23c3f;
   --color-stance-against-bg: #fff1f1;
@@ -105,8 +105,9 @@
   --color-mirai-progress-fill: #a9e89d;
 
   /* Gradient endpoints */
-  --color-mirai-gradient-start: #64d8c6;
-  --color-mirai-gradient-end: #bcecd3;
+  /* 立川市版 配色「ケヤキ」（市の木）。本家カラーからの変更は FORK_GUIDELINES 要件4 */
+  --color-mirai-gradient-start: #b5d38f;
+  --color-mirai-gradient-end: #e8f1d6;
 }
 
 :root {
@@ -117,8 +118,8 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #2aa693;
-  --primary-accent: #0f8472;
+  --primary: #4d7a2e;
+  --primary-accent: #3a5e22;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -240,7 +241,7 @@
   }
 
   .bg-mirai-light-gradient {
-    background-image: linear-gradient(to bottom, #e2f6f3, #eef6e2);
+    background-image: linear-gradient(to bottom, #e8f1d6, #f2f7e8);
   }
 
   .bg-mirai-white-fade {
