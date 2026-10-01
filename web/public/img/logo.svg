@@ -1,14 +1,14 @@
 <svg width="42" height="36" viewBox="0 0 42 36" fill="none" xmlns="http://www.w3.org/2000/svg">
   <title>みらい議会＠立川市</title>
-  <!-- 立川市の木「ケヤキ」をモチーフにしたオリジナルのマーク（扇形の樹冠） -->
-  <path d="M3 20C3 9 11.5 2.5 21 2.5S39 9 39 20c0 2.6-2.6 3.8-5.6 2.9-3.6 2.6-8.6 2.4-12.4.4-3.8 2-8.8 2.2-12.4-.4C5.6 23.8 3 22.6 3 20Z" fill="#4D7A2E"/>
-  <g stroke="#E8F1D6" stroke-width="1.6" stroke-linecap="round">
-    <path d="M21 23.5V8"/>
-    <path d="M21 21 13.5 11"/>
-    <path d="M21 21 28.5 11"/>
-    <path d="M19 18.5 9 15.5"/>
-    <path d="M23 18.5 33 15.5"/>
+  <!-- 立川市の花「コブシ」をモチーフにしたオリジナルのマーク（白い6枚の花びらと、花の下に1枚つく小さな葉） -->
+  <path d="M21 24.5v10" stroke="#3A5E22" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M21 29.5c3.2-4.4 8.6-5.6 12.6-3.6-2.4 4.6-8.2 6.4-12.6 3.6Z" fill="#4D7A2E"/>
+  <g stroke="#4D7A2E" stroke-width="1.5" stroke-linejoin="round">
+    <ellipse cx="21" cy="13.5" rx="3.6" ry="10" transform="rotate(-62 21 24)" fill="#F2F7E8"/>
+    <ellipse cx="21" cy="13.5" rx="3.6" ry="10" transform="rotate(62 21 24)" fill="#F2F7E8"/>
+    <ellipse cx="21" cy="13.5" rx="3.8" ry="10.5" transform="rotate(-30 21 24)" fill="#FFFFFF"/>
+    <ellipse cx="21" cy="13.5" rx="3.8" ry="10.5" transform="rotate(30 21 24)" fill="#FFFFFF"/>
+    <ellipse cx="21" cy="13" rx="4" ry="11" fill="#FFFFFF"/>
   </g>
-  <path d="M21 22v12" stroke="#3A5E22" stroke-width="3.2" stroke-linecap="round"/>
-  <path d="M11 34.2h20" stroke="#B5D38F" stroke-width="1.6" stroke-linecap="round"/>
+  <circle cx="21" cy="23" r="2.1" fill="#B5D38F" stroke="#4D7A2E" stroke-width="1.2"/>
 </svg>

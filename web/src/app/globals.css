@@ -105,7 +105,7 @@
   --color-mirai-progress-fill: #a9e89d;
 
   /* Gradient endpoints */
-  /* 立川市版 配色「ケヤキ」（市の木）。本家カラーからの変更は FORK_GUIDELINES 要件4 */
+  /* 立川市版の配色（緑系）。本家カラーからの変更は FORK_GUIDELINES 要件4 */
   --color-mirai-gradient-start: #b5d38f;
   --color-mirai-gradient-end: #e8f1d6;
 }
