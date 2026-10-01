@@ -56,7 +56,7 @@ export const siteConfig = {
   /**
    * AI機能の有効/無効設定
    * 本番環境のコスト管理のため、機能ごとにオン/オフを切り替えられます。
-   * 立川市版は API 費用を発生させない方針のため、すべて無効にしています。
+   * 立川市版は API 費用を発生させない方針のため、AI機能はすべて無効にしています。
    */
   features: {
     /** AIチャット機能（議案への質問・テキスト選択からの質問）*/
@@ -68,5 +68,11 @@ export const siteConfig = {
      * 非公式運営など、党の公式サービスとして出さない場合は false にする。
      */
     showTeamMiraiSection: false as boolean,
+    /**
+     * Google アナリティクス（アクセス解析）
+     * true かつ環境変数 NEXT_PUBLIC_GA_TRACKING_ID が設定されている場合のみ計測する。
+     * プライバシーポリシーの記載もこの値で自動的に切り替わる。
+     */
+    googleAnalytics: false as boolean,
   },
 } as const;
