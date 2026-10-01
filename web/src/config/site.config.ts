@@ -4,33 +4,39 @@
  * @see docs/kawasaki/20260304_1000_別地域向けfork手順.md
  */
 export const siteConfig = {
-  siteName: "みらい議会ー川崎版",
+  siteName: "みらい議会＠立川市",
   siteDescription:
-    "川崎市議会で今どんな議案が検討されているか、わかりやすく伝えるプラットフォームです",
-  cityName: "川崎市",
-  councilName: "川崎市議会",
+    "立川市議会で今どんな議案が検討されているか、わかりやすく伝えるプラットフォームです",
+  cityName: "立川市",
+  councilName: "立川市議会",
   keywords: [
-    "みらい議会ー川崎版",
+    "みらい議会＠立川市",
     "議案",
-    "川崎市",
+    "立川市",
     "市議会",
     "地方政治",
     "政策",
     "解説",
   ],
-  councilBaseUrl: "https://www.city.kawasaki.jp/",
+  councilBaseUrl: "https://www.city.tachikawa.lg.jp/shigikai/",
   /** 議案・議決結果の一覧ページ */
   councilBillsDetailUrl:
-    "https://www.city.kawasaki.jp/shisei/category/40-7-25-0-0-0-0-0-0-0.html",
-  twitterHashtag: "みらい議会川崎版", // # なし
+    "https://www.city.tachikawa.lg.jp/shigikai/gian/1007177.html",
+  twitterHashtag: "みらい議会立川市", // # なし
   externalLinks: {
-    report: "https://forms.gle/GM4oTN94ttPRjyjp9",
+    /** 問題報告先（専用フォームを用意するまでは GitHub Issues） */
+    report: "https://github.com/purepu-hc/mirai-gikai-tachikawa/issues/new",
     aboutNote: "",
     donation: "https://team-mir.ai/support/donation",
     teamAbout: "https://team-mir.ai/about",
-    terms: "https://team-mir.ai/terms",
-    privacy: "https://team-mir.ai/privacy",
-    faq: "https://team-mirai.notion.site/FAQ-28cf6f56bae180bd84e7f7ae80f806a1",
+    /** 規約類は本サービス内のページを使う（チームみらいの規約には飛ばさない） */
+    terms: "/terms",
+    privacy: "/privacy",
+    faq: "/faq",
+    /** AGPL-3.0 第13条: 改変後ソースコードの入手先 */
+    sourceCode: "https://github.com/purepu-hc/mirai-gikai-tachikawa",
+    /** 本家「みらい議会」（FORK_GUIDELINES 推奨リンク） */
+    upstreamService: "https://gikai.team-mir.ai/",
   },
   /**
    * ページを管理する政党名（空文字列の場合は政党名を省略した汎用表現を使用）
@@ -40,20 +46,23 @@ export const siteConfig = {
   /**
    * サービス運営者情報
    * 利用規約や問い合わせ先に使用します。
+   * TODO: 公開前に運営者名・問い合わせ先を確定する
    */
   operator: {
-    name: "GondoTakashi" as string,
-    contactUrl: "https://x.com/TakashiGondo" as string,
+    name: "みらい議会＠立川市 運営者（市民有志）" as string,
+    contactUrl:
+      "https://github.com/purepu-hc/mirai-gikai-tachikawa/issues" as string,
     /** 利用規約の準拠法・管轄裁判所（第一審の専属的合意管轄） */
-    jurisdiction: "横浜地方裁判所" as string,
+    jurisdiction: "東京地方裁判所立川支部" as string,
   },
   /**
    * AI機能の有効/無効設定
    * 本番環境のコスト管理のため、機能ごとにオン/オフを切り替えられます。
+   * 立川市版は API 費用を発生させない方針のため、すべて無効にしています。
    */
   features: {
     /** AIチャット機能（議案への質問・テキスト選択からの質問）*/
-    aiChat: true,
+    aiChat: false,
     /** AIインタビュー機能（議案当事者へのヒアリング）*/
     aiInterview: false,
     /**

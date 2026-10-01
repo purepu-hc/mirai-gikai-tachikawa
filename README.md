@@ -1,17 +1,28 @@
-# みらい議会ー川崎版
+# みらい議会＠立川市
 
-https://mirai-gikai-kawasaki-web.vercel.app/
-※後でドメイン変更するかもしれない
+立川市議会で今どんな議案が検討されているかを、わかりやすく伝えることを目指す非公式プロジェクトです（準備中・未公開）。
 
 ## 注意事項
-- このプロジェクトは「チームみらい」が開発・運営している「みらい議会」をForkして開発したものとなります。  
-- **非公式**ですので、ここでの不具合や気になる点についての問い合わせは  
-  党公式ではなく[GondoTakashi](https://x.com/TakashiGondo)にご連絡ください。
+- **これは政党チームみらいが運営しているものではありません。**
+- **立川市・立川市議会の公式サービスではありません。** 市民有志による非公式プロジェクトです。
+- 不具合や気になる点は、党公式や市ではなく、本リポジトリの [Issues](https://github.com/purepu-hc/mirai-gikai-tachikawa/issues) までお寄せください。
+- 本家「みらい議会」: https://gikai.team-mir.ai/
 
-## 他地方議会向けForkガイド
-- 他の市議会・県議会等のバージョンを作成したい場合は、  
-  以下のドキュメントを参考にすると早いと思います  
-  [fork手順](docs/kawasaki/20260304_1000_別地域向けfork手順.md)
+## 出典とライセンス
+- 本リポジトリは [bakumon1107/mirai-gikai-fukuoka-city](https://github.com/bakumon1107/mirai-gikai-fukuoka-city) の `kawasaki/develop` ブランチ（川崎市版、2026-04-08 時点）をもとにしています。
+  - 系統: [team-mirai/mirai-gikai](https://github.com/team-mirai/mirai-gikai)（本家）→ 川崎市版（GondoTakashi）→ 福岡市版（bakumon1107）→ 本リポジトリ
+- ライセンスは本家と同じ [AGPL-3.0](./LICENSE) です。改変後のソースコードも同ライセンスで公開します。
+- 本家の [Fork ガイドライン](https://github.com/team-mirai/mirai-gikai/blob/develop/FORK_GUIDELINES.md) に従います。
+
+## 改変履歴
+- 2026-10-01: 立川市版として作業開始。サイト設定を立川市向けに変更、AIチャット・AIインタビューを無効化、フッターに免責表示・本家リンク・ソースコードリンクを追加、デスクトップメニューの党への寄附リンクを非表示化
+
+## AI機能について
+- API費用を発生させない方針のため、`web/src/config/site.config.ts` の `features.aiChat` / `features.aiInterview` は `false` にしています。
+- `AI_GATEWAY_API_KEY` は設定しない運用です。
+
+## 他地方議会向けForkガイド（川崎市版より）
+- [fork手順](docs/kawasaki/20260304_1000_別地域向けfork手順.md)
 
 ---
 

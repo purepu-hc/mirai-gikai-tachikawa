@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import type { Route } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { siteConfig } from "@/config/site.config";
 import { usePathname } from "next/navigation";
+import { siteConfig } from "@/config/site.config";
 import { isInterviewPage } from "@/lib/page-layout-utils";
 import { routes } from "@/lib/routes";
 import { policyLinks, primaryLinks } from "./footer.config";
@@ -22,9 +22,45 @@ export function Footer() {
         {siteConfig.features.showTeamMiraiSection && <FooterLogoSection />}
         <FooterPrimaryLinks />
         <FooterPolicies />
+        <FooterDisclaimer />
         {siteConfig.features.showTeamMiraiSection && <FooterCopyright />}
       </div>
     </footer>
+  );
+}
+
+/**
+ * 免責表示（FORK_GUIDELINES 必須要件5）と、
+ * 本家へのリンク（推奨）・ソースコードの入手先（AGPL-3.0 第13条）
+ */
+function FooterDisclaimer() {
+  return (
+    <div className="flex flex-col items-center gap-2 text-[12px] text-slate-800">
+      <p>これは政党チームみらいが運営しているものではありません。</p>
+      <p>
+        {siteConfig.cityName}・{siteConfig.councilName}
+        の公式サービスではありません。市民有志による非公式プロジェクトです。
+      </p>
+      <p className="flex flex-wrap justify-center gap-x-2">
+        <a
+          href={siteConfig.externalLinks.upstreamService}
+          target="_blank"
+          rel="noreferrer"
+          className="underline hover:text-slate-900"
+        >
+          本家「みらい議会」
+        </a>
+        <span>｜</span>
+        <a
+          href={siteConfig.externalLinks.sourceCode}
+          target="_blank"
+          rel="noreferrer"
+          className="underline hover:text-slate-900"
+        >
+          ソースコード（AGPL-3.0）
+        </a>
+      </p>
+    </div>
   );
 }
 

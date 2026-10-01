@@ -9,28 +9,28 @@
 
 ```bash
 # 1. worktreeを作成
-git worktree add ../mirai-gikai-kawasaki-worktree/<branch-name> -b <branch-name>
+git worktree add ../mirai-gikai-tachikawa-worktree/<branch-name> -b <branch-name>
 
 # 2. settings.local.jsonをコピー（権限設定のため必須）
-mkdir -p ../mirai-gikai-kawasaki-worktree/<branch-name>/.claude
-cp .claude/settings.local.json ../mirai-gikai-kawasaki-worktree/<branch-name>/.claude/
+mkdir -p ../mirai-gikai-tachikawa-worktree/<branch-name>/.claude
+cp .claude/settings.local.json ../mirai-gikai-tachikawa-worktree/<branch-name>/.claude/
 
 # 3. .envをコピー（環境変数の引き継ぎ）
-cp .env ../mirai-gikai-kawasaki-worktree/<branch-name>/
+cp .env ../mirai-gikai-tachikawa-worktree/<branch-name>/
 
 # 4. 依存パッケージをインストール
-cd ../mirai-gikai-kawasaki-worktree/<branch-name> && pnpm install --frozen-lockfile
+cd ../mirai-gikai-tachikawa-worktree/<branch-name> && pnpm install --frozen-lockfile
 ```
 
-- **目的**: kawasaki/developブランチを常にクリーンに保ち、作業の分離と並列作業を容易にする
-- **重要**: worktreeは必ずプロジェクト外（`../mirai-gikai-kawasaki-worktree/`）に作成すること。プロジェクト内（`.claude/worktrees/` 等）に作成するとBiomeが「nested root configuration」エラーを起こす。
+- **目的**: tachikawa/developブランチを常にクリーンに保ち、作業の分離と並列作業を容易にする
+- **重要**: worktreeは必ずプロジェクト外（`../mirai-gikai-tachikawa-worktree/`）に作成すること。プロジェクト内（`.claude/worktrees/` 等）に作成するとBiomeが「nested root configuration」エラーを起こす。
 
 ### Worktreeクリーンアップ（必須）
 PR作成・マージ完了後は、不要になったworktreeを速やかに削除すること。放置するとディスクを圧迫し、Biome等のツールがエラーを起こす原因になる。
 
 ```bash
 # 1. worktreeを削除
-git worktree remove ../mirai-gikai-kawasaki-worktree/<branch-name>
+git worktree remove ../mirai-gikai-tachikawa-worktree/<branch-name>
 
 # 2. マージ済みブランチを削除
 git branch -d <branch-name>
@@ -39,17 +39,21 @@ git branch -d <branch-name>
 git worktree prune
 ```
 
-### 実装完了後は即PR作成
-実装完了後は「コミットしますか？」等の確認を挟まず、コミット → push → PR作成まで一気に進めること。ユーザーへの確認は不要。
+### fork元へのpush・PRは禁止（立川市版の最重要ルール）
+本リポジトリ（`purepu-hc/mirai-gikai-tachikawa`）は `bakumon1107/mirai-gikai-fukuoka-city` の fork であり、その系統の大元は `team-mirai/mirai-gikai`（本家）である。
 
-**ベースブランチは必ず `kawasaki/develop`**。`develop` や `main` へのPRは出さないこと。
+- **fork元（福岡市版・川崎版）や本家へ push・PR作成・Issue作成をしないこと。** fork では `gh pr create` の既定の送り先が fork 元になるため、必ず `--repo purepu-hc/mirai-gikai-tachikawa` を明示すること。
+- 既存ブランチ（`kawasaki/develop`、`fukuoka-city/develop` など）は上流の参照用。書き換え・削除・force push をしないこと。
+- **作業のベースブランチは `tachikawa/develop`**。PR の送り先もここ。
+- push・PR作成の前には必ずユーザーに確認を取ること（確認なしで一気に進めない）。
+
 ```bash
-gh pr create --base kawasaki/develop ...
+gh pr create --repo purepu-hc/mirai-gikai-tachikawa --base tachikawa/develop ...
 ```
 
 ### セルフレビュー必須
 実装完了後（コミット前）に、必ず `/review` スキルを実行してセルフレビューを受けること。`/review` はCodexレビュー・`test-guidelines-checker` によるテストガイドラインチェック・`code-quality-checker` によるコード品質チェックを同時に実行する。指摘があれば修正してからコミットする。
-レビューを通過したら、ユーザーに確認せずそのままPR作成まで一気に進めること（push → `gh pr create`）。
+レビューを通過したら、ユーザーに確認を取ってから push → `gh pr create --repo purepu-hc/mirai-gikai-tachikawa --base tachikawa/develop` に進むこと。
 
 ### 並列PR作成
 複数の独立したPRを作成する場合は `/parallel-pr` スキルを使用すること。
