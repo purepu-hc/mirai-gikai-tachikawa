@@ -48,6 +48,7 @@ export const routes = {
   petitions: () => "/petitions" as const,
 
   // ── 定例会セッション ────────────────────────────────
+  sessions: () => "/sessions" as const,
   sessionBills: (slug: string) => `/sessions/${slug}/bills` as const,
 
   // ── その他 ────────────────────────────────────────

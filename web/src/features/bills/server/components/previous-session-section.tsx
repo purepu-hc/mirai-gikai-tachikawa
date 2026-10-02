@@ -115,6 +115,17 @@ export function PreviousSessionSection({
           </div>
         )}
       </div>
+
+      {/* 過去の定例会の一覧へ */}
+      {!isCurrent && (
+        <Link
+          href={routes.sessions() as Route}
+          className="flex items-center gap-1 self-end text-sm font-bold text-mirai-text hover:underline"
+        >
+          過去の定例会をすべて見る
+          <ChevronRight className="h-4 w-4" aria-hidden="true" />
+        </Link>
+      )}
     </section>
   );
 }

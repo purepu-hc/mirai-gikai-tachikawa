@@ -1,5 +1,5 @@
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { Container } from "@/components/layouts/container";
 import { siteConfig } from "@/config/site.config";
 import { getBillsByCouncilSession } from "@/features/bills/server/loaders/get-bills-by-council-session";
@@ -39,7 +39,7 @@ export default async function SessionBillsPage({ params }: Props) {
   ]);
 
   return (
-    <Container className="py-8">
+    <Container className="pt-24 pb-12 md:pt-12">
       <Suspense>
         <CouncilSessionBillList
           session={session}

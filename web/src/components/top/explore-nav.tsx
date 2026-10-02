@@ -1,4 +1,10 @@
-import { FileText, Landmark, type LucideIcon, Mail } from "lucide-react";
+import {
+  Archive,
+  FileText,
+  Landmark,
+  type LucideIcon,
+  Mail,
+} from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { routes } from "@/lib/routes";
@@ -43,12 +49,18 @@ export function ExploreNav({ activeSessionSlug }: ExploreNavProps) {
       description: "市民からの要望と結果を見る",
       Icon: Mail,
     },
+    {
+      href: routes.sessions(),
+      label: "過去の定例会",
+      description: "これまでの会期の議案を見る",
+      Icon: Archive,
+    },
   ];
 
   return (
     <nav aria-label="議案のさがし方">
       <ul
-        className={`grid grid-cols-1 gap-3 ${items.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
+        className={`grid grid-cols-1 gap-3 ${items.length === 4 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3"}`}
       >
         {items.map(({ href, label, description, Icon }) => (
           <li key={label}>
