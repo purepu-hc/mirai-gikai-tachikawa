@@ -4,7 +4,9 @@ export type BillStatus =
   | "in_committee"
   | "plenary_session"
   | "approved"
-  | "rejected";
+  | "rejected"
+  | "adopted"
+  | "partially_adopted";
 
 export type Decision = {
   /** ISO形式の日付（例: 2026-09-10） */
@@ -83,4 +85,33 @@ export function buildStatusNote(
   }
   if (isReferralOmitted(committeeName)) return "委員会付託を省略し本会議で審議";
   return "提出";
+}
+
+/**
+ * 請願・陳情の審議状況を判定する。
+ * - 不採択 → rejected（「採択」より先に判定）
+ * - 一部採択・趣旨採択 → partially_adopted（正確な結果の語は status_note に残る）
+ * - 採択 → adopted
+ * - 継続審査など結果が出ていない場合は、議案と同じく付託状況から判定する
+ */
+export function resolvePetitionStatus(
+  committeeName: string | null,
+  decisionText: string | null
+): BillStatus {
+  const decision = parseDecision(decisionText);
+  if (decision) {
+    const { result } = decision;
+    if (result.includes("不採択")) return "rejected";
+    if (result.includes("一部採択") || result.includes("趣旨採択")) {
+      return "partially_adopted";
+    }
+    if (result.includes("採択")) return "adopted";
+  }
+  if (committeeName && !isReferralOmitted(committeeName)) {
+    return "in_committee";
+  }
+  if (isReferralOmitted(committeeName)) {
+    return "plenary_session";
+  }
+  return "submitted";
 }

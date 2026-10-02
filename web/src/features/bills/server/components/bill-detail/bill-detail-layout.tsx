@@ -56,6 +56,7 @@ export async function BillDetailLayout({
             <BillStatusProgress
               status={bill.status}
               statusNote={bill.status_note}
+              billType={bill.bill_type}
             />
           </div>
 

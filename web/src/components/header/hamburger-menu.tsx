@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +10,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import type { CouncilSession } from "@/features/council-sessions/shared/types";
+import { routes } from "@/lib/routes";
 import { RubyToggle } from "@/lib/rubyful";
 
 interface HamburgerMenuProps {
@@ -52,6 +54,29 @@ export function HamburgerMenu({ sessions }: HamburgerMenuProps) {
               </ul>
             </div>
           )}
+          <div>
+            <p className="text-xs font-semibold text-gray-500 mb-1">
+              ほかのさがし方
+            </p>
+            <ul className="flex flex-col gap-1">
+              <li>
+                <Link
+                  href={routes.committees() as Route}
+                  className="block text-sm py-1 hover:underline"
+                >
+                  委員会からさがす
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={routes.petitions() as Route}
+                  className="block text-sm py-1 hover:underline"
+                >
+                  請願・陳情
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </PopoverContent>
     </Popover>

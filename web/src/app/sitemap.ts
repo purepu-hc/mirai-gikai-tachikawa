@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getBills } from "@/features/bills/server/loaders/get-bills";
+import { getCommittees } from "@/features/committees/server/loaders/get-committees";
+import { getPetitions } from "@/features/petitions/server/loaders/get-petitions";
 import { env } from "@/lib/env";
 import { routes } from "@/lib/routes";
 
@@ -8,9 +10,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ? `https://${process.env.VERCEL_URL}`
     : env.webUrl;
 
-  const bills = await getBills();
+  const [bills, petitions, committees] = await Promise.all([
+    getBills(),
+    getPetitions(),
+    getCommittees(),
+  ]);
 
-  const billUrls = bills.map((bill) => ({
+  // 議案一覧は請願・陳情を含まないため、請願・陳情の詳細ページは別に足す
+  const billUrls = [...bills, ...petitions].map((bill) => ({
     url: `${baseUrl}${routes.billDetail(bill.id)}`,
     lastModified: new Date(bill.updated_at),
     changeFrequency: "weekly" as const,
@@ -24,6 +31,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily" as const,
       priority: 1,
     },
+    ...[routes.committees(), routes.petitions()].map((path) => ({
+      url: `${baseUrl}${path}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
+    ...committees.map((committee) => ({
+      url: `${baseUrl}${routes.committeeDetail(committee.id)}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.5,
+    })),
     ...billUrls,
   ];
 }

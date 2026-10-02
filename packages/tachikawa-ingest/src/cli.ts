@@ -1,9 +1,10 @@
 /**
  * 使い方:
  *   pnpm --filter @mirai-gikai/tachikawa-ingest build-sql -- --session r8-3-teireikai
+ *   pnpm --filter @mirai-gikai/tachikawa-ingest build-sql -- --session r8-3-teireikai --kind petition
  *   （ネットに出られない環境では --html <保存したHTML> で読み込み元を指定）
  *
- * 出力: supabase/seed-tachikawa/<session>.sql
+ * 出力: supabase/seed-tachikawa/<session>.sql（請願・陳情は <session>-petitions.sql）
  * 生成したSQLは Supabase の SQL Editor に貼り付けて実行する。
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -27,22 +28,32 @@ async function main() {
     );
   }
 
+  const kind = getArg("kind") ?? "bill";
+  if (kind !== "bill" && kind !== "petition") {
+    throw new Error(`--kind は bill か petition を指定してください（指定値: ${kind}）`);
+  }
+  const pageUrl = kind === "petition" ? session.petitionListUrl : session.billListUrl;
+  if (!pageUrl) {
+    throw new Error(`会期 ${sessionKey} には請願・陳情一覧ページが登録されていません（masters.ts）`);
+  }
+
   const htmlPath = getArg("html");
   const html = htmlPath
     ? readFileSync(resolve(htmlPath), "utf-8")
-    : await (await fetch(session.billListUrl)).text();
+    : await (await fetch(pageUrl)).text();
 
-  const rows = parseBillList(html, session.billListUrl);
+  const rows = parseBillList(html, pageUrl).filter((r) => r.kind === kind);
   if (rows.length === 0) {
-    throw new Error("議案が1件も読み取れませんでした。ページの構成が変わった可能性があります。");
+    throw new Error("1件も読み取れませんでした。ページの構成が変わった可能性があります。");
   }
 
   const sql = buildSql({ session, committees: COMMITTEES, factions: FACTIONS, rows });
   const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
-  const outPath = getArg("out") ?? resolve(repoRoot, `supabase/seed-tachikawa/${session.slug}.sql`);
+  const outPath = getArg("out") ?? resolve(repoRoot, `supabase/seed-tachikawa/${session.slug}${kind === "petition" ? "-petitions" : ""}.sql`);
   mkdirSync(dirname(outPath), { recursive: true });
   writeFileSync(outPath, sql);
-  console.log(`${session.name}: 議案 ${rows.length} 件 → ${outPath}`);
+  const label = kind === "petition" ? "請願・陳情" : "議案";
+  console.log(`${session.name}: ${label} ${rows.length} 件 → ${outPath}`);
 }
 
 main().catch((e) => {

@@ -41,6 +41,12 @@ export const routes = {
   reportComplete: (reportId: string) => `/report/${reportId}/complete` as const,
   reportChatLog: (reportId: string) => `/report/${reportId}/chat-log` as const,
 
+  // ── 委員会・請願陳情 ──────────────────────────────
+  committees: () => "/committees" as const,
+  committeeDetail: (committeeId: string) =>
+    `/committees/${committeeId}` as const,
+  petitions: () => "/petitions" as const,
+
   // ── 定例会セッション ────────────────────────────────
   sessionBills: (slug: string) => `/sessions/${slug}/bills` as const,
 

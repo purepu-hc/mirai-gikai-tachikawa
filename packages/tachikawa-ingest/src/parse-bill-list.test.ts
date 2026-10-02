@@ -1,7 +1,11 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { parseBillList, stripFileSizeNote } from "./parse-bill-list";
+import {
+  detectTableKind,
+  parseBillList,
+  stripFileSizeNote,
+} from "./parse-bill-list";
 
 const PAGE_URL =
   "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026377/1028161.html";
@@ -42,9 +46,64 @@ describe("parseBillList", () => {
     expect(rows[0].category).toBe("市長提出議案");
   });
 
+  it("議案の表は kind を bill にする", () => {
+    expect(rows.every((r) => r.kind === "bill")).toBe(true);
+  });
+
   it("caption に「議案一覧」を含まない表は無視する", () => {
     const html = `<table><tr><td>a</td><td>b</td><td>c</td><td>d</td></tr></table>`;
     expect(parseBillList(html, PAGE_URL)).toEqual([]);
+  });
+});
+
+describe("detectTableKind", () => {
+  it("caption で議案・請願・陳情の表を見分ける", () => {
+    expect(detectTableKind("市長提出議案一覧")).toBe("bill");
+    expect(detectTableKind("請願一覧")).toBe("petition");
+    expect(detectTableKind("陳情一覧")).toBe("petition");
+    expect(detectTableKind("検索")).toBeNull();
+  });
+});
+
+// 請願・陳情一覧ページの実HTMLは未取得のため、想定構成で組み立てたHTMLで確認する。
+// 実ページ取得時は __fixtures__ に保存してテストを差し替えること。
+describe("parseBillList（請願・陳情）", () => {
+  const PETITION_URL =
+    "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026377/1028162.html";
+  const html = `
+    <table>
+      <caption>陳情一覧</caption>
+      <tr><th>番号</th><th>件名</th><th>提出者</th><th>付託委員会名</th><th>議決年月日、結果</th></tr>
+      <tr>
+        <td>陳情第11号</td>
+        <td><a href="./chinjo11.pdf">テスト用の陳情 （PDF 100.0 KB）</a></td>
+        <td>市内在住者</td>
+        <td>文教委員会</td>
+        <td>令和8年9月30日、不採択</td>
+      </tr>
+    </table>
+    <table>
+      <caption>請願一覧</caption>
+      <tr><td>請願第1号</td><td>テスト用の請願</td><td>厚生委員会</td><td></td></tr>
+    </table>`;
+  const rows = parseBillList(html, PETITION_URL);
+
+  it("請願・陳情の表を kind petition で読み取る", () => {
+    expect(rows).toHaveLength(2);
+    expect(rows.every((r) => r.kind === "petition")).toBe(true);
+    expect(rows.map((r) => r.category)).toEqual(["陳情", "請願"]);
+  });
+
+  it("提出者などの列が増えても、付託委員会と結果は末尾2列から読む", () => {
+    expect(rows[0].number).toBe("陳情第11号");
+    expect(rows[0].name).toBe("テスト用の陳情");
+    expect(rows[0].committeeName).toBe("文教委員会");
+    expect(rows[0].decisionText).toBe("令和8年9月30日、不採択");
+    expect(rows[0].pdfUrl).toBe(
+      "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026377/chinjo11.pdf"
+    );
+    expect(rows[1].committeeName).toBe("厚生委員会");
+    expect(rows[1].decisionText).toBeNull();
   });
 });
 

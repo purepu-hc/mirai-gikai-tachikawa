@@ -1,11 +1,12 @@
 import { Container } from "@/components/layouts/container";
 import { About } from "@/components/top/about";
+import { ExploreNav } from "@/components/top/explore-nav";
 
 import { Hero } from "@/components/top/hero";
 import { TeamMirai } from "@/components/top/team-mirai";
 import { siteConfig } from "@/config/site.config";
-import { BillSearchForm } from "@/features/bill-search/server/components/bill-search-form";
 import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
+import { BillSearchForm } from "@/features/bill-search/server/components/bill-search-form";
 import { BillDisclaimer } from "@/features/bills/client/components/bill-detail/bill-disclaimer";
 import { BillsByTagSection } from "@/features/bills/server/components/bills-by-tag-section";
 import { FeaturedBillSection } from "@/features/bills/server/components/featured-bill-section";
@@ -52,8 +53,10 @@ export default async function Home() {
 
       {/* 議案の検索窓 */}
       <Container>
-        <div className="pt-10">
+        <div className="flex flex-col gap-4 pt-10">
           <BillSearchForm />
+          {/* 議案一覧・委員会・請願陳情への入口 */}
+          <ExploreNav activeSessionSlug={activeSessionSlug} />
         </div>
       </Container>
 

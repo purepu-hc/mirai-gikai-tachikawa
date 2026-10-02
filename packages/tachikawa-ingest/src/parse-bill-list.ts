@@ -1,8 +1,13 @@
 import { parse } from "parse5";
 
-/** 議案一覧の1行分 */
+/** 一覧表の種類（議案 or 請願・陳情） */
+export type BillKind = "bill" | "petition";
+
+/** 議案一覧（または請願・陳情一覧）の1行分 */
 export type BillListRow = {
-  /** 表の区分（例: 市長提出議案、議員提出議案、委員会提出議案） */
+  /** 議案か請願・陳情か（DB の bills.bill_type に入る） */
+  kind: BillKind;
+  /** 表の区分（例: 市長提出議案、議員提出議案、請願、陳情） */
   category: string;
   /** 番号（例: 議案第95号） */
   number: string;
@@ -59,8 +64,22 @@ export function stripFileSizeNote(name: string): string {
 }
 
 /**
- * 立川市議会「議案一覧」ページのHTMLから議案の行を取り出す。
- * caption に「議案一覧」を含む表だけを対象にする（検索ボックス等の表は無視）。
+ * 表の caption から、どの一覧表かを判定する。対象外の表は null。
+ * - 「議案一覧」を含む → 議案
+ * - 「請願一覧」「陳情一覧」を含む → 請願・陳情
+ */
+export function detectTableKind(captionText: string): BillKind | null {
+  if (captionText.includes("議案一覧")) return "bill";
+  if (/(請願|陳情)一覧/.test(captionText)) return "petition";
+  return null;
+}
+
+/**
+ * 立川市議会「議案一覧」「請願・陳情一覧」ページのHTMLから行を取り出す。
+ * caption で一覧表を見分け、それ以外の表（検索ボックス等）は無視する。
+ *
+ * 列は「番号・件名・…・付託委員会・結果」を想定し、番号と件名は先頭2列、
+ * 付託委員会と結果は末尾2列から読む（請願表に提出者などの列が増えても読めるように）。
  */
 export function parseBillList(html: string, pageUrl: string): BillListRow[] {
   const document = parse(html) as unknown as Node;
@@ -69,14 +88,17 @@ export function parseBillList(html: string, pageUrl: string): BillListRow[] {
   for (const table of findAll(document, "table")) {
     const caption = findAll(table, "caption")[0];
     const captionText = caption ? normalizeSpace(textOf(caption)) : "";
-    if (!captionText.includes("議案一覧")) continue;
+    const kind = detectTableKind(captionText);
+    if (!kind) continue;
     const category = captionText.replace(/一覧$/, "");
 
     for (const tr of findAll(table, "tr")) {
       const cells = children(tr).filter((c) => c.tagName === "td");
       if (cells.length < 4) continue; // 見出し行（th）などは飛ばす
 
-      const [numberCell, nameCell, committeeCell, decisionCell] = cells;
+      const [numberCell, nameCell] = cells;
+      const committeeCell = cells[cells.length - 2];
+      const decisionCell = cells[cells.length - 1];
       const link = findAll(nameCell, "a")[0];
       const href = link ? attr(link, "href") : null;
 
@@ -84,6 +106,7 @@ export function parseBillList(html: string, pageUrl: string): BillListRow[] {
       const decision = normalizeSpace(textOf(decisionCell));
 
       rows.push({
+        kind,
         category,
         number: normalizeSpace(textOf(numberCell)).replace(/\s/g, ""),
         name: stripFileSizeNote(textOf(nameCell)),

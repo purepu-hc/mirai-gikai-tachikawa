@@ -2,6 +2,7 @@ import {
   buildStatusNote,
   isReferralOmitted,
   resolveBillStatus,
+  resolvePetitionStatus,
 } from "./bill-status";
 import type { CouncilSessionDef } from "./masters";
 import type { BillListRow } from "./parse-bill-list";
@@ -17,7 +18,24 @@ export function sqlString(value: string | null): string {
  * 立川市議会の議案番号は年ごとに振り直されるため。
  */
 export function buildBillNumber(eraYearLabel: string, number: string): string {
+  // 継続審査の請願・陳情など、番号にすでに年が付いている場合はその年を使う
+  // （会期の年を付けると、前年の同じ番号を上書きしてしまうため）
+  if (/^(令和|平成)(元|\d+)年/.test(number)) return number;
   return `${eraYearLabel}${number}`;
+}
+
+/** 行の出典ページ（請願・陳情は請願・陳情一覧ページ） */
+function sourceUrl(row: BillListRow, session: CouncilSessionDef): string {
+  return row.kind === "petition" && session.petitionListUrl
+    ? session.petitionListUrl
+    : session.billListUrl;
+}
+
+/** 行の種類に応じて審議状況を判定する */
+export function resolveRowStatus(row: BillListRow) {
+  return row.kind === "petition"
+    ? resolvePetitionStatus(row.committeeName, row.decisionText)
+    : resolveBillStatus(row.committeeName, row.decisionText);
 }
 
 /** 解説を書くまでの仮コンテンツ（事実のみ。AIは使わない） */
@@ -26,7 +44,7 @@ export function buildPlaceholderContent(
   session: CouncilSessionDef
 ): { title: string; summary: string; content: string } {
   const lines = [
-    "## この議案について",
+    row.kind === "petition" ? "## この請願・陳情について" : "## この議案について",
     "",
     "やさしい解説は準備中です。まずは公式の情報をご覧ください。",
     "",
@@ -35,8 +53,11 @@ export function buildPlaceholderContent(
     `- 区分：${row.category}`,
     `- 審議の状況：${buildStatusNote(row.committeeName, row.decisionText)}`,
   ];
-  if (row.pdfUrl) lines.push(`- 議案書（PDF）：${row.pdfUrl}`);
-  lines.push(`- 出典：${session.billListUrl}`);
+  if (row.pdfUrl) {
+    const pdfLabel = row.kind === "petition" ? "資料（PDF）" : "議案書（PDF）";
+    lines.push(`- ${pdfLabel}：${row.pdfUrl}`);
+  }
+  lines.push(`- 出典：${sourceUrl(row, session)}`);
   return {
     title: row.name,
     summary: "やさしい解説は準備中です。",
@@ -60,11 +81,19 @@ type BuildSqlInput = {
 export function buildSql(input: BuildSqlInput): string {
   const { session, committees, factions, rows } = input;
   const out: string[] = [];
+  const billCount = rows.filter((r) => r.kind === "bill").length;
+  const petitionCount = rows.length - billCount;
+  const sources = [
+    ...(billCount > 0 ? [session.billListUrl] : []),
+    ...(petitionCount > 0 && session.petitionListUrl
+      ? [session.petitionListUrl]
+      : []),
+  ];
 
   out.push(
     `-- 生成元: packages/tachikawa-ingest（AI不使用）`,
-    `-- 出典: ${session.billListUrl}`,
-    `-- 対象: ${session.name}（議案 ${rows.length} 件）`,
+    ...sources.map((url) => `-- 出典: ${url}`),
+    `-- 対象: ${session.name}（議案 ${billCount} 件、請願・陳情 ${petitionCount} 件）`,
     "BEGIN;",
     ""
   );
@@ -102,19 +131,19 @@ export function buildSql(input: BuildSqlInput): string {
   out.push("");
 
   // 議案
-  out.push("-- 議案");
+  out.push("-- 議案・請願・陳情");
   for (const row of rows) {
     const billNumber = buildBillNumber(session.eraYearLabel, row.number);
-    const status = resolveBillStatus(row.committeeName, row.decisionText);
+    const status = resolveRowStatus(row);
     const note = buildStatusNote(row.committeeName, row.decisionText);
     const committeeSql =
       row.committeeName && !isReferralOmitted(row.committeeName)
         ? `(SELECT id FROM committees WHERE name = ${sqlString(row.committeeName)} LIMIT 1)`
         : "NULL";
     out.push(
-      `INSERT INTO bills (bill_number, name, status, status_note, pdf_url, committee_id, council_session_id, publish_status)`,
-      `VALUES (${sqlString(billNumber)}, ${sqlString(row.name)}, ${sqlString(status)}, ${sqlString(note)}, ${sqlString(row.pdfUrl)}, ${committeeSql}, (SELECT id FROM council_sessions WHERE slug = ${sqlString(session.slug)}), 'published')`,
-      `ON CONFLICT (bill_number) WHERE bill_number != '' DO UPDATE SET name = EXCLUDED.name, status = EXCLUDED.status, status_note = EXCLUDED.status_note, pdf_url = EXCLUDED.pdf_url, committee_id = EXCLUDED.committee_id, council_session_id = EXCLUDED.council_session_id;`
+      `INSERT INTO bills (bill_number, bill_type, name, status, status_note, pdf_url, committee_id, council_session_id, publish_status)`,
+      `VALUES (${sqlString(billNumber)}, ${sqlString(row.kind)}, ${sqlString(row.name)}, ${sqlString(status)}, ${sqlString(note)}, ${sqlString(row.pdfUrl)}, ${committeeSql}, (SELECT id FROM council_sessions WHERE slug = ${sqlString(session.slug)}), 'published')`,
+      `ON CONFLICT (bill_number) WHERE bill_number != '' DO UPDATE SET bill_type = EXCLUDED.bill_type, name = EXCLUDED.name, status = EXCLUDED.status, status_note = EXCLUDED.status_note, pdf_url = EXCLUDED.pdf_url, committee_id = EXCLUDED.committee_id, council_session_id = EXCLUDED.council_session_id;`
     );
     const placeholder = buildPlaceholderContent(row, session);
     for (const level of ["normal", "hard"] as const) {
