@@ -11,6 +11,7 @@ import { BillStatusBadge } from "../../../client/components/bill-list/bill-statu
 import { BillTag } from "../../../client/components/bill-list/bill-tag";
 import { getBillShareData } from "../../../client/utils/share";
 import type { BillWithContent } from "../../../shared/types";
+import { formatBillNumberLabel } from "../../../shared/utils/format-bill-number";
 
 interface BillDetailHeaderProps {
   bill: BillWithContent;
@@ -24,6 +25,7 @@ export async function BillDetailHeader({
   opinionCount,
 }: BillDetailHeaderProps) {
   const displayTitle = bill.bill_content?.title;
+  const billNumberLabel = formatBillNumberLabel(bill.bill_number);
   const displaySummary = bill.bill_content?.summary;
 
   const { shareUrl, shareMessage, thumbnailUrl } = await getBillShareData(bill);
@@ -46,6 +48,11 @@ export async function BillDetailHeader({
       )}
 
       <div className="px-4 pt-8 mb-3">
+        {billNumberLabel && (
+          <p className="text-sm font-bold text-primary-accent mb-1">
+            {billNumberLabel}
+          </p>
+        )}
         {displayTitle && (
           <h1 className="text-2xl font-bold mb-3">{displayTitle}</h1>
         )}
