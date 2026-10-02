@@ -13,6 +13,8 @@ export type CouncilSessionDef = {
   eraYearLabel: string;
   /** 議案一覧ページ */
   billListUrl: string;
+  /** 請願・陳情一覧ページ（ある会期のみ） */
+  petitionListUrl?: string;
 };
 
 /**
@@ -28,6 +30,8 @@ export const SESSIONS: Record<string, CouncilSessionDef> = {
     eraYearLabel: "令和8年",
     billListUrl:
       "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026377/1028161.html",
+    petitionListUrl:
+      "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026377/1028162.html",
   },
 };
 

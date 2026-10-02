@@ -1,7 +1,12 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { parseBillList, stripFileSizeNote } from "./parse-bill-list";
+import {
+  detectTableKind,
+  parseBillList,
+  stripFileSizeNote,
+  withCategoryPrefix,
+} from "./parse-bill-list";
 
 const PAGE_URL =
   "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026377/1028161.html";
@@ -42,9 +47,85 @@ describe("parseBillList", () => {
     expect(rows[0].category).toBe("市長提出議案");
   });
 
+  it("議案の表は kind を bill にする", () => {
+    expect(rows.every((r) => r.kind === "bill")).toBe(true);
+  });
+
   it("caption に「議案一覧」を含まない表は無視する", () => {
     const html = `<table><tr><td>a</td><td>b</td><td>c</td><td>d</td></tr></table>`;
     expect(parseBillList(html, PAGE_URL)).toEqual([]);
+  });
+});
+
+describe("detectTableKind", () => {
+  it("caption で議案・請願・陳情の表を見分ける", () => {
+    expect(detectTableKind("市長提出議案一覧")).toBe("bill");
+    expect(detectTableKind("請願一覧")).toBe("petition");
+    expect(detectTableKind("陳情一覧")).toBe("petition");
+    expect(detectTableKind("検索")).toBeNull();
+  });
+});
+
+describe("parseBillList（請願・陳情）", () => {
+  const PETITION_URL =
+    "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026377/1028162.html";
+  const rows = parseBillList(
+    readFileSync(
+      resolve(__dirname, "__fixtures__/r8-3-petition-list.html"),
+      "utf-8"
+    ),
+    PETITION_URL
+  );
+
+  it("請願1件・陳情3件を kind petition で読み取る", () => {
+    expect(rows).toHaveLength(4);
+    expect(rows.every((r) => r.kind === "petition")).toBe(true);
+    expect(rows.map((r) => r.category)).toEqual([
+      "請願",
+      "陳情",
+      "陳情",
+      "陳情",
+    ]);
+  });
+
+  it("「第1号」だけの番号に請願・陳情を付ける", () => {
+    expect(rows.map((r) => r.number)).toEqual([
+      "請願第1号",
+      "陳情第11号",
+      "陳情第12号",
+      "陳情第13号",
+    ]);
+  });
+
+  it("件名・PDF・付託委員会を読み取り、未議決の結果は null", () => {
+    expect(rows[0].name).toBe("重度障害者等就労支援特別事業の実施を求める請願");
+    expect(rows[0].pdfUrl).toBe(
+      "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/028/162/r8seigan01-2.pdf"
+    );
+    expect(rows[2].committeeName).toBe("総務委員会");
+    expect(rows[0].decisionText).toBeNull();
+  });
+
+  it("列が増えても、付託委員会と結果は末尾2列から読む", () => {
+    const html = `<table><caption>陳情一覧</caption>
+      <tr><td>第5号</td><td>テスト</td><td>提出者</td><td>文教委員会</td><td>令和8年9月30日、不採択</td></tr>
+    </table>`;
+    const [row] = parseBillList(html, PETITION_URL);
+    expect(row.committeeName).toBe("文教委員会");
+    expect(row.decisionText).toBe("令和8年9月30日、不採択");
+  });
+});
+
+describe("withCategoryPrefix", () => {
+  it("請願・陳情の「第N号」に区分を付ける", () => {
+    expect(withCategoryPrefix("第1号", "請願")).toBe("請願第1号");
+    expect(withCategoryPrefix("第11号", "陳情")).toBe("陳情第11号");
+  });
+
+  it("すでに種別がある番号や、議案の表はそのまま", () => {
+    expect(withCategoryPrefix("陳情第11号", "陳情")).toBe("陳情第11号");
+    expect(withCategoryPrefix("議案第95号", "市長提出議案")).toBe("議案第95号");
+    expect(withCategoryPrefix("第1号", "市長提出議案")).toBe("第1号");
   });
 });
 

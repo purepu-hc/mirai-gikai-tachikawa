@@ -32,6 +32,7 @@ export async function findPublishedBillsWithContents(
     `
     )
     .eq("publish_status", "published")
+    .neq("bill_type", "petition")
     .eq("bill_contents.difficulty_level", difficultyLevel)
     .order("published_at", { ascending: false });
 
@@ -224,6 +225,7 @@ export async function findPublishedBillsByDietSession(
     )
     .eq("council_session_id", councilSessionId)
     .eq("publish_status", "published")
+    .neq("bill_type", "petition")
     .eq("bill_contents.difficulty_level", difficultyLevel)
     .order("status_order", { ascending: true })
     .order("published_at", { ascending: false });
@@ -265,6 +267,7 @@ export async function findPreviousSessionBills(
     )
     .eq("council_session_id", councilSessionId)
     .eq("publish_status", "published")
+    .neq("bill_type", "petition")
     .eq("bill_contents.difficulty_level", difficultyLevel)
     .order("status_order", { ascending: true })
     .order("published_at", { ascending: false })
@@ -294,6 +297,7 @@ export async function countPublishedBillsByDietSession(
     })
     .eq("council_session_id", councilSessionId)
     .eq("publish_status", "published")
+    .neq("bill_type", "petition")
     .eq("bill_contents.difficulty_level", difficultyLevel);
 
   if (error) {
@@ -364,6 +368,7 @@ export async function findPublishedBillsByTag(
     )
     .eq("tag_id", tagId)
     .eq("bills.publish_status", "published")
+    .neq("bills.bill_type", "petition")
     .eq("bills.bill_contents.difficulty_level", difficultyLevel);
 
   if (councilSessionId) {
@@ -412,6 +417,7 @@ export async function findFeaturedBillsWithContents(
     `
     )
     .eq("is_featured", true)
+    .neq("bill_type", "petition")
     .eq("bill_contents.difficulty_level", difficultyLevel)
     .order("published_at", { ascending: false });
 
@@ -455,6 +461,7 @@ export async function findComingSoonBills(councilSessionId: string | null) {
     `
     )
     .eq("publish_status", "coming_soon")
+    .neq("bill_type", "petition")
     .order("created_at", { ascending: false });
 
   if (councilSessionId) {
