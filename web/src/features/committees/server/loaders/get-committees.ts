@@ -67,3 +67,22 @@ const _getCachedCommitteeWithBills = unstable_cache(
   ["committee-with-bills"],
   { revalidate: 600, tags: [CACHE_TAGS.BILLS] }
 );
+
+/**
+ * 議案詳細ページの「担当の委員会」リンク用に、委員会を1件取得する（キャッシュあり）。
+ * リンクは補助的な表示なので、取得に失敗してもページ全体は止めずに null を返す。
+ */
+export async function getCommitteeForBillLink(committeeId: string) {
+  try {
+    return await _getCachedCommittee(committeeId);
+  } catch (error) {
+    console.error("Failed to load committee for bill link:", error);
+    return null;
+  }
+}
+
+const _getCachedCommittee = unstable_cache(
+  async (committeeId: string) => findCommitteeById(committeeId),
+  ["committee-for-bill-link"],
+  { revalidate: 600, tags: [CACHE_TAGS.BILLS] }
+);

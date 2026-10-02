@@ -4,12 +4,12 @@ import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { siteConfig } from "@/config/site.config";
 import { DifficultySelector } from "@/features/bill-difficulty/client/components/difficulty-selector";
 import type { DifficultyLevelEnum } from "@/features/bill-difficulty/shared/types";
 import type { CouncilSession } from "@/features/council-sessions/shared/types";
 import { InterviewHeaderActions } from "@/features/interview-session/client/components/interview-header-actions";
 import { isInterviewPage, isMainPage } from "@/lib/page-layout-utils";
-import { siteConfig } from "@/config/site.config";
 import { routes } from "@/lib/routes";
 import { HamburgerMenu } from "./hamburger-menu";
 
@@ -57,7 +57,7 @@ export function HeaderClient({ difficultyLevel, sessions }: HeaderClientProps) {
             {showInterviewActions && <InterviewHeaderActions />}
             <Link
               href={routes.search()}
-              aria-label="議案をさがす"
+              aria-label="議案・請願・陳情をさがす"
               className="flex h-10 w-10 items-center justify-center rounded-full text-mirai-text hover:bg-muted"
             >
               <Search className="h-5 w-5" aria-hidden="true" />

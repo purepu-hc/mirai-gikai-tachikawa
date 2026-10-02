@@ -1,6 +1,7 @@
 import { Container } from "@/components/layouts/container";
 import { siteConfig } from "@/config/site.config";
 import type { DifficultyLevelEnum } from "@/features/bill-difficulty/shared/types";
+import { BillCommitteeLink } from "@/features/committees/server/components/bill-committee-link";
 import { InterviewLandingSection } from "@/features/interview-config/client/components/interview-landing-section";
 import { getInterviewConfig } from "@/features/interview-config/server/loaders/get-interview-config";
 import { BillInterviewOpinionsSection } from "@/features/interview-report/server/components/bill-interview-opinions-section";
@@ -57,6 +58,10 @@ export async function BillDetailLayout({
               status={bill.status}
               statusNote={bill.status_note}
               billType={bill.bill_type}
+            />
+            <BillCommitteeLink
+              committeeId={bill.committee_id}
+              className="mt-3"
             />
           </div>
 

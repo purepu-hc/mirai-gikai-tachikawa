@@ -3,8 +3,8 @@ import type { Route } from "next";
 import Link from "next/link";
 import { CompactBillCard } from "@/features/bills/client/components/bill-list/compact-bill-card";
 import type { BillWithContent } from "@/features/bills/shared/types";
+import { splitByBillType } from "@/features/bills/shared/utils/split-by-bill-type";
 import { routes } from "@/lib/routes";
-import { splitByBillType } from "../../shared/utils/split-by-bill-type";
 
 interface CommitteeDetailPageProps {
   committee: { id: string; name: string; description: string | null };

@@ -3,7 +3,7 @@ import { createAdminClient } from "@mirai-gikai/supabase";
 import type { DifficultyLevelEnum } from "@/features/bill-difficulty/shared/types";
 
 /** 1回の検索で返す議案の上限 */
-const MAX_RESULTS = 100;
+export const MAX_RESULTS = 100;
 
 /**
  * キーワードを含む公開済み議案のIDを集める。
@@ -53,6 +53,47 @@ export async function findPublishedBillIdsByKeyword(
     for (const row of rows ?? []) ids.add(row.bill_id);
   }
   return [...ids].slice(0, MAX_RESULTS);
+}
+
+/**
+ * 名前にキーワードを含む有効な委員会を表示順に取得する
+ *
+ * @param pattern toContainsPattern でエスケープ済みのパターン
+ */
+export async function findActiveCommitteesByKeyword(pattern: string) {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("committees")
+    .select("id, name")
+    .eq("is_active", true)
+    .ilike("name", pattern)
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to search committees: ${error.message}`);
+  }
+  return data;
+}
+
+/**
+ * 指定した委員会に付託された公開済みの議案・請願・陳情のIDを集める
+ */
+export async function findPublishedBillIdsByCommitteeIds(
+  committeeIds: string[]
+): Promise<string[]> {
+  if (committeeIds.length === 0) return [];
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("bills")
+    .select("id")
+    .eq("publish_status", "published")
+    .in("committee_id", committeeIds)
+    .limit(MAX_RESULTS);
+
+  if (error) {
+    throw new Error(`Failed to search bills by committee: ${error.message}`);
+  }
+  return data.map((row) => row.id);
 }
 
 /**
