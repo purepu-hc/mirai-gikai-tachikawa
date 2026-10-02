@@ -5,6 +5,7 @@ import {
   detectTableKind,
   parseBillList,
   stripFileSizeNote,
+  withCategoryPrefix,
 } from "./parse-bill-list";
 
 const PAGE_URL =
@@ -65,45 +66,66 @@ describe("detectTableKind", () => {
   });
 });
 
-// 請願・陳情一覧ページの実HTMLは未取得のため、想定構成で組み立てたHTMLで確認する。
-// 実ページ取得時は __fixtures__ に保存してテストを差し替えること。
 describe("parseBillList（請願・陳情）", () => {
   const PETITION_URL =
     "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026377/1028162.html";
-  const html = `
-    <table>
-      <caption>陳情一覧</caption>
-      <tr><th>番号</th><th>件名</th><th>提出者</th><th>付託委員会名</th><th>議決年月日、結果</th></tr>
-      <tr>
-        <td>陳情第11号</td>
-        <td><a href="./chinjo11.pdf">テスト用の陳情 （PDF 100.0 KB）</a></td>
-        <td>市内在住者</td>
-        <td>文教委員会</td>
-        <td>令和8年9月30日、不採択</td>
-      </tr>
-    </table>
-    <table>
-      <caption>請願一覧</caption>
-      <tr><td>請願第1号</td><td>テスト用の請願</td><td>厚生委員会</td><td></td></tr>
-    </table>`;
-  const rows = parseBillList(html, PETITION_URL);
+  const rows = parseBillList(
+    readFileSync(
+      resolve(__dirname, "__fixtures__/r8-3-petition-list.html"),
+      "utf-8"
+    ),
+    PETITION_URL
+  );
 
-  it("請願・陳情の表を kind petition で読み取る", () => {
-    expect(rows).toHaveLength(2);
+  it("請願1件・陳情3件を kind petition で読み取る", () => {
+    expect(rows).toHaveLength(4);
     expect(rows.every((r) => r.kind === "petition")).toBe(true);
-    expect(rows.map((r) => r.category)).toEqual(["陳情", "請願"]);
+    expect(rows.map((r) => r.category)).toEqual([
+      "請願",
+      "陳情",
+      "陳情",
+      "陳情",
+    ]);
   });
 
-  it("提出者などの列が増えても、付託委員会と結果は末尾2列から読む", () => {
-    expect(rows[0].number).toBe("陳情第11号");
-    expect(rows[0].name).toBe("テスト用の陳情");
-    expect(rows[0].committeeName).toBe("文教委員会");
-    expect(rows[0].decisionText).toBe("令和8年9月30日、不採択");
+  it("「第1号」だけの番号に請願・陳情を付ける", () => {
+    expect(rows.map((r) => r.number)).toEqual([
+      "請願第1号",
+      "陳情第11号",
+      "陳情第12号",
+      "陳情第13号",
+    ]);
+  });
+
+  it("件名・PDF・付託委員会を読み取り、未議決の結果は null", () => {
+    expect(rows[0].name).toBe("重度障害者等就労支援特別事業の実施を求める請願");
     expect(rows[0].pdfUrl).toBe(
-      "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026377/chinjo11.pdf"
+      "https://www.city.tachikawa.lg.jp/_res/projects/default_project/_page_/001/028/162/r8seigan01-2.pdf"
     );
-    expect(rows[1].committeeName).toBe("厚生委員会");
-    expect(rows[1].decisionText).toBeNull();
+    expect(rows[2].committeeName).toBe("総務委員会");
+    expect(rows[0].decisionText).toBeNull();
+  });
+
+  it("列が増えても、付託委員会と結果は末尾2列から読む", () => {
+    const html = `<table><caption>陳情一覧</caption>
+      <tr><td>第5号</td><td>テスト</td><td>提出者</td><td>文教委員会</td><td>令和8年9月30日、不採択</td></tr>
+    </table>`;
+    const [row] = parseBillList(html, PETITION_URL);
+    expect(row.committeeName).toBe("文教委員会");
+    expect(row.decisionText).toBe("令和8年9月30日、不採択");
+  });
+});
+
+describe("withCategoryPrefix", () => {
+  it("請願・陳情の「第N号」に区分を付ける", () => {
+    expect(withCategoryPrefix("第1号", "請願")).toBe("請願第1号");
+    expect(withCategoryPrefix("第11号", "陳情")).toBe("陳情第11号");
+  });
+
+  it("すでに種別がある番号や、議案の表はそのまま", () => {
+    expect(withCategoryPrefix("陳情第11号", "陳情")).toBe("陳情第11号");
+    expect(withCategoryPrefix("議案第95号", "市長提出議案")).toBe("議案第95号");
+    expect(withCategoryPrefix("第1号", "市長提出議案")).toBe("第1号");
   });
 });
 

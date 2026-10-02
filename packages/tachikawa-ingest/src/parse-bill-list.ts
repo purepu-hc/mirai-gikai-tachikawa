@@ -64,6 +64,16 @@ export function stripFileSizeNote(name: string): string {
 }
 
 /**
+ * 請願・陳情一覧の番号は「第1号」だけなので、表の区分（請願・陳情）を前に付ける。
+ * 議案一覧のように番号に種別が入っている場合（議案第95号）はそのまま。
+ */
+export function withCategoryPrefix(number: string, category: string): string {
+  if (!number.startsWith("第")) return number;
+  if (category === "請願" || category === "陳情") return `${category}${number}`;
+  return number;
+}
+
+/**
  * 表の caption から、どの一覧表かを判定する。対象外の表は null。
  * - 「議案一覧」を含む → 議案
  * - 「請願一覧」「陳情一覧」を含む → 請願・陳情
@@ -108,7 +118,10 @@ export function parseBillList(html: string, pageUrl: string): BillListRow[] {
       rows.push({
         kind,
         category,
-        number: normalizeSpace(textOf(numberCell)).replace(/\s/g, ""),
+        number: withCategoryPrefix(
+          normalizeSpace(textOf(numberCell)).replace(/\s/g, ""),
+          category
+        ),
         name: stripFileSizeNote(textOf(nameCell)),
         pdfUrl: href ? new URL(href, pageUrl).toString() : null,
         committeeName: committee === "" ? null : committee,
