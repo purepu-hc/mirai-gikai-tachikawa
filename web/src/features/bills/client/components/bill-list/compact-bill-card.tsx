@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { formatDateJST } from "@/lib/utils/date";
 import type { BillWithContent } from "../../../shared/types";
+import { formatBillNumberLabel } from "../../../shared/utils/format-bill-number";
 import { BillStatusBadge } from "./bill-status-badge";
 
 interface CompactBillCardProps {
@@ -16,6 +17,7 @@ interface CompactBillCardProps {
 export function CompactBillCard({ bill, className }: CompactBillCardProps) {
   const displayTitle = bill.bill_content?.title || bill.name;
   const statusLabel = "提出";
+  const billNumberLabel = formatBillNumberLabel(bill.bill_number);
 
   return (
     <Card
@@ -24,6 +26,11 @@ export function CompactBillCard({ bill, className }: CompactBillCardProps) {
       <div className="flex">
         {/* コンテンツエリア */}
         <div className="flex-1 p-4 flex flex-col gap-2">
+          {billNumberLabel && (
+            <span className="text-xs font-bold text-primary-accent">
+              {billNumberLabel}
+            </span>
+          )}
           <h3 className="font-bold text-[15px] leading-[1.6] line-clamp-2">
             {displayTitle}
           </h3>

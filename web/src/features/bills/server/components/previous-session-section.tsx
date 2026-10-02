@@ -1,10 +1,12 @@
 import { ChevronRight } from "lucide-react";
-import Image from "next/image";
 import type { Route } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { CouncilSession } from "@/features/council-sessions/shared/types";
+import { buildSessionPeriodDescription } from "@/features/council-sessions/shared/utils/session-period-description";
 import { routes } from "@/lib/routes";
+import { getJapanDateString } from "@/lib/utils/date";
 import { CompactBillCard } from "../../client/components/bill-list/compact-bill-card";
 import type { BillWithContent } from "../../shared/types";
 
@@ -12,6 +14,11 @@ interface PreviousSessionSectionProps {
   session: CouncilSession;
   bills: BillWithContent[];
   totalBillCount: number;
+  /**
+   * current: いま開かれている定例会（トップページ上部に表示）
+   * archive: 過去の定例会（従来の Archive 表示）
+   */
+  variant?: "current" | "archive";
 }
 
 const VISIBLE_BILLS = 5;
@@ -20,6 +27,7 @@ export function PreviousSessionSection({
   session,
   bills,
   totalBillCount,
+  variant = "archive",
 }: PreviousSessionSectionProps) {
   const visibleBills = bills.slice(0, VISIBLE_BILLS);
   const showMoreButton = totalBillCount > visibleBills.length;
@@ -30,25 +38,35 @@ export function PreviousSessionSection({
   }
 
   const sessionBillsUrl = `/sessions/${session.slug}/bills`;
-  const startDate = new Date(session.start_date);
-  const endDate = new Date(session.end_date ?? session.start_date);
-  const sessionDescription = `${startDate.getFullYear()}.${startDate.getMonth() + 1}月〜${endDate.getMonth() + 1}月に実施された${session.name}`;
+  const sessionDescription = buildSessionPeriodDescription(
+    session,
+    getJapanDateString()
+  );
+  const isCurrent = variant === "current";
 
   return (
     <section className="flex flex-col gap-6">
-      {/* Archiveヘッダー */}
+      {/* セクション見出し */}
       <div className="flex flex-col gap-1">
-        <h2>
-          <Image
-            src="/icons/archive-typography.svg"
-            alt="Archive"
-            width={156}
-            height={36}
-            priority
-          />
-        </h2>
+        {isCurrent ? (
+          <h2 className="text-[28px] font-bold leading-tight text-black">
+            いまの議会の議案
+          </h2>
+        ) : (
+          <h2>
+            <Image
+              src="/icons/archive-typography.svg"
+              alt="Archive"
+              width={156}
+              height={36}
+              priority
+            />
+          </h2>
+        )}
         <p className="text-sm font-bold text-primary-accent">
-          過去の定例会に上程された議案
+          {isCurrent
+            ? "新しく提出された議案から順に並んでいます"
+            : "過去の定例会に上程された議案"}
         </p>
       </div>
 
@@ -87,7 +105,11 @@ export function PreviousSessionSection({
                 asChild
                 className="w-[214px] h-12 text-base font-bold border-mirai-text rounded-full hover:bg-gray-50 bg-white"
               >
-                <Link href={sessionBillsUrl as Route}>もっと読む</Link>
+                <Link href={sessionBillsUrl as Route}>
+                  {isCurrent
+                    ? `すべての議案を見る（${totalBillCount}件）`
+                    : "もっと読む"}
+                </Link>
               </Button>
             </div>
           </div>

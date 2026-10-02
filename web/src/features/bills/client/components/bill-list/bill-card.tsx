@@ -3,6 +3,7 @@ import { RubySafeLineClamp } from "@/components/ruby-safe-line-clamp";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateJST } from "@/lib/utils/date";
 import type { BillWithContent } from "../../../shared/types";
+import { formatBillNumberLabel } from "../../../shared/utils/format-bill-number";
 import { BillStatusBadge } from "./bill-status-badge";
 import { BillTag } from "./bill-tag";
 
@@ -13,6 +14,7 @@ interface BillCardProps {
 export function BillCard({ bill }: BillCardProps) {
   const displayTitle = bill.bill_content?.title;
   const summary = bill.bill_content?.summary;
+  const billNumberLabel = formatBillNumberLabel(bill.bill_number);
 
   return (
     <Card className="border border-black hover:bg-muted/50 transition-colors relative overflow-hidden max-w-[634px]">
@@ -45,6 +47,11 @@ export function BillCard({ bill }: BillCardProps) {
         <div className="flex-1">
           <CardHeader>
             <div className="flex flex-col gap-3">
+              {billNumberLabel && (
+                <span className="text-xs font-bold text-primary-accent">
+                  {billNumberLabel}
+                </span>
+              )}
               <CardTitle className="text-2xl/8 tracking-normal">
                 {displayTitle}
               </CardTitle>

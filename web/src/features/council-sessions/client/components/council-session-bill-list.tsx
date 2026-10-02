@@ -1,11 +1,13 @@
 import { ExternalLink } from "lucide-react";
 import Image from "next/image";
+import { siteConfig } from "@/config/site.config";
 import type {
   BillWithContent,
   ComingSoonBill,
 } from "@/features/bills/shared/types";
-import { siteConfig } from "@/config/site.config";
+import { getJapanDateString } from "@/lib/utils/date";
 import type { CouncilSession } from "../../shared/types";
+import { buildSessionPeriodDescription } from "../../shared/utils/session-period-description";
 import { BillListWithStatusFilter } from "./bill-list-with-status-filter";
 
 type Props = {
@@ -20,8 +22,10 @@ export function CouncilSessionBillList({
   comingSoonBills = [],
 }: Props) {
   const startDate = new Date(session.start_date);
-  const endDate = new Date(session.end_date ?? session.start_date);
-  const sessionDescription = `${startDate.getFullYear()}.${startDate.getMonth() + 1}月〜${endDate.getMonth() + 1}月に実施された${session.name}`;
+  const sessionDescription = buildSessionPeriodDescription(
+    session,
+    getJapanDateString()
+  );
 
   return (
     <div className="flex flex-col gap-8">
