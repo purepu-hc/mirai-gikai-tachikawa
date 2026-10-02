@@ -10,7 +10,7 @@ interface BillSearchFormProps {
 }
 
 /**
- * 議案の検索窓。JavaScript なしでも動く通常のフォーム（GET /search?q=...）
+ * 議案・請願・陳情の検索窓。JavaScript なしでも動く通常のフォーム（GET /search?q=...）
  */
 export function BillSearchForm({
   defaultValue,
@@ -24,7 +24,7 @@ export function BillSearchForm({
       className={`flex items-center gap-2 ${className ?? ""}`}
     >
       <label htmlFor="bill-search-q" className="sr-only">
-        議案を検索
+        議案・請願・陳情を検索
       </label>
       <Input
         id="bill-search-q"
@@ -32,7 +32,7 @@ export function BillSearchForm({
         name="q"
         defaultValue={defaultValue}
         maxLength={MAX_KEYWORD_LENGTH}
-        placeholder="議案をさがす（例：公園、子ども）"
+        placeholder="議案・請願・陳情をさがす（例：公園、子ども）"
         className="h-11 rounded-full bg-white px-4"
       />
       <Button type="submit" className="h-11 rounded-full px-5 shrink-0">

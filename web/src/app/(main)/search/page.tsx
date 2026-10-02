@@ -5,8 +5,8 @@ import { BillSearchPage } from "@/features/bill-search/server/components/bill-se
 import { normalizeSearchKeyword } from "@/features/bill-search/shared/utils/search-keyword";
 
 export const metadata: Metadata = {
-  title: `議案をさがす | ${siteConfig.siteName}`,
-  description: `${siteConfig.councilName}の議案を言葉でさがせます。`,
+  title: `議案・請願・陳情をさがす | ${siteConfig.siteName}`,
+  description: `${siteConfig.councilName}の議案・請願・陳情を言葉でさがせます。`,
   robots: { index: false },
 };
 
