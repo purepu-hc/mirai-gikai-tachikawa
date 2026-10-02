@@ -4,6 +4,7 @@ import { About } from "@/components/top/about";
 import { Hero } from "@/components/top/hero";
 import { TeamMirai } from "@/components/top/team-mirai";
 import { siteConfig } from "@/config/site.config";
+import { BillSearchForm } from "@/features/bill-search/server/components/bill-search-form";
 import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
 import { BillDisclaimer } from "@/features/bills/client/components/bill-detail/bill-disclaimer";
 import { BillsByTagSection } from "@/features/bills/server/components/bills-by-tag-section";
@@ -49,10 +50,17 @@ export default async function Home() {
       {/* 本日の定例会セクション */}
       <CurrentCouncilSession session={currentSession} />
 
+      {/* 議案の検索窓 */}
+      <Container>
+        <div className="pt-10">
+          <BillSearchForm />
+        </div>
+      </Container>
+
       {/* いまの定例会の議案（新しい順・トップから一覧への動線） */}
       {activeSessionData && (
         <Container>
-          <div className="pt-10">
+          <div className="pt-8">
             <PreviousSessionSection
               variant="current"
               session={activeSessionData.session}

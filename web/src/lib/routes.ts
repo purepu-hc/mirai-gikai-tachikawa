@@ -15,6 +15,10 @@ export const routes = {
   // ── 議案 ──────────────────────────────────────────
   billDetail: (billId: string) => `/bills/${billId}` as const,
   billOpinions: (billId: string) => `/bills/${billId}/opinions` as const,
+  search: (keyword?: string) =>
+    keyword
+      ? (`/search?q=${encodeURIComponent(keyword)}` as const)
+      : ("/search" as const),
 
   // ── インタビュー ──────────────────────────────────
   interviewLP: (billId: string) => `/bills/${billId}/interview` as const,
