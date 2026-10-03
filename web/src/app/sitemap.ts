@@ -31,12 +31,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily" as const,
       priority: 1,
     },
-    ...[routes.committees(), routes.petitions()].map((path) => ({
-      url: `${baseUrl}${path}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.6,
-    })),
+    ...[routes.committees(), routes.petitions(), routes.sessions()].map(
+      (path) => ({
+        url: `${baseUrl}${path}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.6,
+      })
+    ),
     ...committees.map((committee) => ({
       url: `${baseUrl}${routes.committeeDetail(committee.id)}`,
       lastModified: new Date(),

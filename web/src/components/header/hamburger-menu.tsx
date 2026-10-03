@@ -75,6 +75,14 @@ export function HamburgerMenu({ sessions }: HamburgerMenuProps) {
                   請願・陳情
                 </Link>
               </li>
+              <li>
+                <Link
+                  href={routes.sessions() as Route}
+                  className="block text-sm py-1 hover:underline"
+                >
+                  定例会・臨時会の一覧
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
