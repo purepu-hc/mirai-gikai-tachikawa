@@ -15,17 +15,13 @@ import { loadHomeData } from "@/features/bills/server/loaders/load-home-data";
 import type { BillWithContent } from "@/features/bills/shared/types";
 import { HomeChatClient } from "@/features/chat/client/components/home-chat-client";
 import { CurrentCouncilSession } from "@/features/council-sessions/client/components/current-council-session";
+import { YearSessionPanel } from "@/features/council-sessions/server/components/year-session-panel";
 import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
 import { getJapanTime } from "@/lib/utils/date";
 
 export default async function Home() {
-  const {
-    billsByTag,
-    featuredBills,
-    previousSessionData,
-    activeSessionData,
-    activeSessionSlug,
-  } = await loadHomeData();
+  const { billsByTag, featuredBills, activeSessionData, activeSessionSlug } =
+    await loadHomeData();
 
   // ゆくゆくタグ機能がマージされたらBFFに統合する
   const [currentSession, currentDifficulty] = await Promise.all([
@@ -90,18 +86,12 @@ export default async function Home() {
           </main>
         </div>
       </Container>
-      {/* 前回の定例会セクション（Archive） */}
-      {previousSessionData && (
-        <div className="bg-mirai-surface-muted py-10">
-          <Container>
-            <PreviousSessionSection
-              session={previousSessionData.session}
-              bills={previousSessionData.bills}
-              totalBillCount={previousSessionData.totalBillCount}
-            />
-          </Container>
-        </div>
-      )}
+      {/* その年の定例会パネル（過去の年度へのリンクつき） */}
+      <div className="bg-mirai-surface-muted py-10">
+        <Container>
+          <YearSessionPanel />
+        </Container>
+      </div>
 
       <Container>
         {/* みらい議会とは セクション */}

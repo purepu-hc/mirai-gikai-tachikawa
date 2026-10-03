@@ -59,9 +59,7 @@ export function ExploreNav({ activeSessionSlug }: ExploreNavProps) {
 
   return (
     <nav aria-label="議案のさがし方">
-      <ul
-        className={`grid grid-cols-1 gap-3 ${items.length === 4 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3"}`}
-      >
+      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {items.map(({ href, label, description, Icon }) => (
           <li key={label}>
             <Link

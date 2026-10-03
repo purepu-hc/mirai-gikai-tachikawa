@@ -2,7 +2,6 @@ import { getBillsByFeaturedTags } from "@/features/bills/server/loaders/get-bill
 import { getActiveCouncilSession } from "@/features/council-sessions/server/loaders/get-active-council-session";
 import { getBillsByCouncilSession } from "./get-bills-by-council-session";
 import { getFeaturedBills } from "./get-featured-bills";
-import { getPreviousSessionBills } from "./get-previous-session-bills";
 
 const MAX_PREVIEW_BILLS = 5;
 
@@ -11,13 +10,11 @@ const MAX_PREVIEW_BILLS = 5;
  * BFF (Backend For Frontend) パターン
  */
 export async function loadHomeData() {
-  const [featuredBills, billsByTag, previousSessionData, activeSession] =
-    await Promise.all([
-      getFeaturedBills(),
-      getBillsByFeaturedTags(),
-      getPreviousSessionBills(),
-      getActiveCouncilSession(),
-    ]);
+  const [featuredBills, billsByTag, activeSession] = await Promise.all([
+    getFeaturedBills(),
+    getBillsByFeaturedTags(),
+    getActiveCouncilSession(),
+  ]);
 
   // いまの定例会の議案（新しい順）。トップから議案一覧へ進めるようにする
   const activeSessionBills = activeSession
@@ -34,7 +31,6 @@ export async function loadHomeData() {
   return {
     billsByTag,
     featuredBills,
-    previousSessionData,
     activeSessionData,
     activeSessionSlug: activeSession?.slug ?? null,
   };
