@@ -4,11 +4,11 @@ import type { CSSProperties } from "react";
 import { useId, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { setDifficultyLevel } from "../../server/actions/set-difficulty-level";
+import type { DifficultyLevelEnum } from "../../shared/types";
 import {
   saveScrollDistanceFromBottom,
   useRestoreScrollFromBottom,
 } from "../hooks/use-scroll-from-bottom";
-import type { DifficultyLevelEnum } from "../../shared/types";
 
 interface DifficultySelectorProps {
   currentLevel: DifficultyLevelEnum;
@@ -72,7 +72,7 @@ export function DifficultySelector({
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm font-bold" style={labelStyle}>
+      <span className="whitespace-nowrap text-sm font-bold" style={labelStyle}>
         {label != null ? (
           label
         ) : (

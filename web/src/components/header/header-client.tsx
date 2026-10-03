@@ -11,6 +11,7 @@ import type { CouncilSession } from "@/features/council-sessions/shared/types";
 import { InterviewHeaderActions } from "@/features/interview-session/client/components/interview-header-actions";
 import { isInterviewPage, isMainPage } from "@/lib/page-layout-utils";
 import { routes } from "@/lib/routes";
+import { splitSiteName } from "@/lib/split-site-name";
 import { HamburgerMenu } from "./hamburger-menu";
 
 interface HeaderClientProps {
@@ -22,16 +23,17 @@ export function HeaderClient({ difficultyLevel, sessions }: HeaderClientProps) {
   const pathname = usePathname();
   const showDifficultySelector = isMainPage(pathname);
   const showInterviewActions = isInterviewPage(pathname);
+  const siteName = splitSiteName(siteConfig.siteName);
 
   return (
     <header className="px-3 fixed top-4 left-0 right-0 z-40 max-w-[1440px] mx-auto">
       <div className="rounded-2xl bg-white shadow-sm mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo / Site Title */}
-          <div className="flex items-center">
+          <div className="flex min-w-0 items-center">
             <Link
               href={routes.home()}
-              className="flex items-center space-x-2"
+              className="flex min-w-0 items-center space-x-2"
               aria-label="ホーム"
             >
               {siteConfig.features.showTeamMiraiSection && (
@@ -42,13 +44,23 @@ export function HeaderClient({ difficultyLevel, sessions }: HeaderClientProps) {
                   height={36}
                 />
               )}
-              <div className="text-xl font-bold">{siteConfig.siteName}</div>
+              {/* スマホでは「みらい議会」「＠立川市」の2段、sm以上は1行 */}
+              <div className="font-bold leading-tight whitespace-nowrap">
+                <span className="block text-lg sm:inline sm:text-xl">
+                  {siteName.main}
+                </span>
+                {siteName.sub && (
+                  <span className="block text-xs text-mirai-text-secondary sm:inline sm:text-xl sm:text-mirai-text">
+                    {siteName.sub}
+                  </span>
+                )}
+              </div>
             </Link>
           </div>
 
           {/* Navigation */}
           <nav
-            className="flex items-center space-x-2"
+            className="flex shrink-0 items-center space-x-1 sm:space-x-2"
             aria-label="補助ナビゲーション"
           >
             {showDifficultySelector && (
