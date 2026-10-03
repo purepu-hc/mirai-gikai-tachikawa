@@ -36,7 +36,7 @@ export async function YearSessionPanel() {
 
   return (
     <section className="rounded-3xl bg-white px-5 py-8 md:px-8">
-      <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+      <div className="mb-6 flex flex-col gap-2">
         <h2 className="text-xl font-bold md:text-2xl">
           令和{reiwaYear}年の定例会
         </h2>
@@ -45,7 +45,8 @@ export async function YearSessionPanel() {
         </p>
       </div>
 
-      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {/* サイトの本文は最大700px幅のため、パソコンでも2列まで */}
+      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {cards.map((card) => (
           <li key={card.number}>
             <SessionCard card={card} />
@@ -77,9 +78,9 @@ function SessionCard({ card }: { card: YearSessionCard }) {
       }`}
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="text-lg font-bold">
-          第{card.number}回
-          <span className="ml-2 text-sm font-medium text-mirai-text-secondary">
+        <span className="flex items-baseline gap-2 whitespace-nowrap">
+          <span className="text-lg font-bold">第{card.number}回</span>
+          <span className="text-sm font-medium text-mirai-text-secondary">
             {card.monthsLabel}
           </span>
         </span>
