@@ -7,6 +7,7 @@ import {
   parseBillList,
   stripFileSizeNote,
   withCategoryPrefix,
+  withPetitionYear,
 } from "./parse-bill-list";
 
 const PAGE_URL =
@@ -89,12 +90,12 @@ describe("parseBillList（請願・陳情）", () => {
     ]);
   });
 
-  it("「第1号」だけの番号に請願・陳情を付ける", () => {
+  it("「第1号」だけの番号に請願・陳情と、資料PDFの年を付ける", () => {
     expect(rows.map((r) => r.number)).toEqual([
-      "請願第1号",
-      "陳情第11号",
-      "陳情第12号",
-      "陳情第13号",
+      "令和8年請願第1号",
+      "令和8年陳情第11号",
+      "令和8年陳情第12号",
+      "令和8年陳情第13号",
     ]);
   });
 
@@ -148,5 +149,35 @@ describe("stripFileSizeNote", () => {
     expect(stripFileSizeNote("補正予算(第3号) （PDF 993.0 KB）")).toBe(
       "補正予算(第3号)"
     );
+  });
+});
+
+describe("withPetitionYear", () => {
+  it("継続審査の陳情は、資料PDFのファイル名の年を番号の前に付ける", () => {
+    expect(
+      withPetitionYear(
+        "陳情第25号",
+        "https://example.jp/001/026/381/r7chinjou25.pdf"
+      )
+    ).toBe("令和7年陳情第25号");
+  });
+
+  it("請願のファイル名（seigan）にも対応する", () => {
+    expect(
+      withPetitionYear("請願第3号", "https://example.jp/r8seigan03.pdf")
+    ).toBe("令和8年請願第3号");
+  });
+
+  it("ファイル名から年が分からないときはそのまま", () => {
+    expect(withPetitionYear("陳情第1号", "https://example.jp/shiryo.pdf")).toBe(
+      "陳情第1号"
+    );
+    expect(withPetitionYear("陳情第1号", null)).toBe("陳情第1号");
+  });
+
+  it("すでに年が付いている番号はそのまま", () => {
+    expect(
+      withPetitionYear("令和7年陳情第25号", "https://example.jp/r7chinjou25.pdf")
+    ).toBe("令和7年陳情第25号");
   });
 });

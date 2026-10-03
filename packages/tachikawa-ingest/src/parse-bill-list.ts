@@ -83,6 +83,19 @@ export function withCategoryPrefix(number: string, category: string): string {
 }
 
 /**
+ * 前の年から継続審査になっている請願・陳情は、一覧の番号が「第25号」だけでも
+ * 資料PDFのファイル名（例: r7chinjou25.pdf）に受理した年が入っている。
+ * その場合は番号の前に年を付け（例: 令和7年陳情第25号）、
+ * 会期の年が付いて別の請願・陳情と取り違えないようにする。
+ */
+export function withPetitionYear(number: string, pdfUrl: string | null): string {
+  if (!pdfUrl || /^(令和|平成)/.test(number)) return number;
+  const fileName = pdfUrl.split("/").pop() ?? "";
+  const match = fileName.match(/^r(\d+)(?:seigan|chinjou)/i);
+  return match ? `令和${Number(match[1])}年${number}` : number;
+}
+
+/**
  * 表の caption から、どの一覧表かを判定する。対象外の表は null。
  * - 「議案一覧」を含む → 議案
  * - 「請願一覧」「陳情一覧」を含む → 請願・陳情
@@ -124,12 +137,18 @@ export function parseBillList(html: string, pageUrl: string): BillListRow[] {
       const committee = normalizeSpace(textOf(committeeCell));
       const decision = normalizeSpace(textOf(decisionCell));
 
+      const pdfUrl = href ? new URL(href, pageUrl).toString() : null;
+      const number = withCategoryPrefix(
+        normalizeBillNumber(textOf(numberCell)),
+        category
+      );
+
       rows.push({
         kind,
         category,
-        number: withCategoryPrefix(normalizeBillNumber(textOf(numberCell)), category),
+        number: kind === "petition" ? withPetitionYear(number, pdfUrl) : number,
         name: stripFileSizeNote(textOf(nameCell)),
-        pdfUrl: href ? new URL(href, pageUrl).toString() : null,
+        pdfUrl,
         committeeName: committee === "" ? null : committee,
         decisionText: decision === "" ? null : decision,
       });
