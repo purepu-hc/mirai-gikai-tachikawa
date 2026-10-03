@@ -55,6 +55,22 @@ export const SESSIONS: Record<string, CouncilSessionDef> = {
       "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026376/1027154.html",
     isCurrent: false,
   },
+  /**
+   * 出典: 令和8年第1回定例会日程表（会期は本会議の初日から最終日）
+   * https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026375/1026379.html
+   */
+  "r8-1-teireikai": {
+    name: "令和8年第1回定例会",
+    slug: "r8-1-teireikai",
+    startDate: "2026-02-18",
+    endDate: "2026-03-24",
+    eraYearLabel: "令和8年",
+    billListUrl:
+      "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026375/1026380.html",
+    petitionListUrl:
+      "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026375/1026381.html",
+    isCurrent: false,
+  },
 };
 
 /**
