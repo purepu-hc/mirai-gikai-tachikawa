@@ -146,3 +146,17 @@ describe("buildSql（議案と請願・陳情が混在）", () => {
     expect(sql).toContain(`-- 出典: ${session.petitionListUrl}`);
   });
 });
+
+describe("buildSql（いまの会期かどうか）", () => {
+  it("いまの会期なら set_active_council_session を呼ぶ", () => {
+    const sql = buildSql({ session, committees: [], factions: [], rows: [row] });
+    expect(sql).toContain("set_active_council_session");
+  });
+
+  it("過去の会期なら、いまの会期を変更しない", () => {
+    const past = SESSIONS["r8-2-teireikai"];
+    const sql = buildSql({ session: past, committees: [], factions: [], rows: [row] });
+    expect(sql).not.toContain("set_active_council_session");
+    expect(sql).toContain("'令和8年議案第107号'");
+  });
+});
