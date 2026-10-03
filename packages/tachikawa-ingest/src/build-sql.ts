@@ -104,7 +104,11 @@ export function buildSql(input: BuildSqlInput): string {
     `INSERT INTO council_sessions (name, slug, start_date, end_date, council_url, is_active)`,
     `VALUES (${sqlString(session.name)}, ${sqlString(session.slug)}, ${sqlString(session.startDate)}, ${sqlString(session.endDate)}, ${sqlString(session.billListUrl)}, false)`,
     `ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, start_date = EXCLUDED.start_date, end_date = EXCLUDED.end_date, council_url = EXCLUDED.council_url;`,
-    `SELECT set_active_council_session((SELECT id FROM council_sessions WHERE slug = ${sqlString(session.slug)}));`,
+    ...(session.isCurrent
+      ? [
+          `SELECT set_active_council_session((SELECT id FROM council_sessions WHERE slug = ${sqlString(session.slug)}));`,
+        ]
+      : ["-- 過去の会期のため、いまの会期（is_active）は変更しない"]),
     ""
   );
 

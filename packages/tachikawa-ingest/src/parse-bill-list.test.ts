@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   detectTableKind,
+  normalizeBillNumber,
   parseBillList,
   stripFileSizeNote,
   withCategoryPrefix,
@@ -113,6 +114,14 @@ describe("parseBillList（請願・陳情）", () => {
     const [row] = parseBillList(html, PETITION_URL);
     expect(row.committeeName).toBe("文教委員会");
     expect(row.decisionText).toBe("令和8年9月30日、不採択");
+  });
+});
+
+describe("normalizeBillNumber", () => {
+  it("空白と末尾の注記を取り除く", () => {
+    expect(normalizeBillNumber(" 議案第78号（※）")).toBe("議案第78号");
+    expect(normalizeBillNumber("議案第 95 号")).toBe("議案第95号");
+    expect(normalizeBillNumber("第1号")).toBe("第1号");
   });
 });
 

@@ -64,6 +64,15 @@ export function stripFileSizeNote(name: string): string {
 }
 
 /**
+ * 番号の空白と、末尾の注記（例：「議案第78号（※）」の「（※）」）を取り除く
+ */
+export function normalizeBillNumber(text: string): string {
+  return normalizeSpace(text)
+    .replace(/\s/g, "")
+    .replace(/[（(][^）)]*[）)]$/, "");
+}
+
+/**
  * 請願・陳情一覧の番号は「第1号」だけなので、表の区分（請願・陳情）を前に付ける。
  * 議案一覧のように番号に種別が入っている場合（議案第95号）はそのまま。
  */
@@ -118,10 +127,7 @@ export function parseBillList(html: string, pageUrl: string): BillListRow[] {
       rows.push({
         kind,
         category,
-        number: withCategoryPrefix(
-          normalizeSpace(textOf(numberCell)).replace(/\s/g, ""),
-          category
-        ),
+        number: withCategoryPrefix(normalizeBillNumber(textOf(numberCell)), category),
         name: stripFileSizeNote(textOf(nameCell)),
         pdfUrl: href ? new URL(href, pageUrl).toString() : null,
         committeeName: committee === "" ? null : committee,

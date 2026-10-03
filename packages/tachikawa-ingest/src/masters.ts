@@ -15,6 +15,11 @@ export type CouncilSessionDef = {
   billListUrl: string;
   /** 請願・陳情一覧ページ（ある会期のみ） */
   petitionListUrl?: string;
+  /**
+   * いまの会期（サイトの「いまの議会」）にするか。
+   * 過去の会期を取り込むときは false にして、いまの会期を上書きしないようにする
+   */
+  isCurrent: boolean;
 };
 
 /**
@@ -32,6 +37,23 @@ export const SESSIONS: Record<string, CouncilSessionDef> = {
       "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026377/1028161.html",
     petitionListUrl:
       "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026377/1028162.html",
+    isCurrent: true,
+  },
+  /**
+   * 出典: 令和8年第2回定例会日程表（会期は本会議の初日から最終日）
+   * https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026376/1027156.html
+   */
+  "r8-2-teireikai": {
+    name: "令和8年第2回定例会",
+    slug: "r8-2-teireikai",
+    startDate: "2026-05-07",
+    endDate: "2026-05-28",
+    eraYearLabel: "令和8年",
+    billListUrl:
+      "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026376/1027155.html",
+    petitionListUrl:
+      "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026376/1027154.html",
+    isCurrent: false,
   },
 };
 
