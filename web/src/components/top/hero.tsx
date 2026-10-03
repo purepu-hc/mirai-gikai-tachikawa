@@ -6,17 +6,18 @@ export function Hero() {
   return (
     <div className="relative w-full h-[80vh] min-h-[400px] md:h-[70vh]">
       <Image
-        src="/img/hero_background.png"
-        alt={siteConfig.councilName}
+        src="/img/hero_tachikawa.webp"
+        alt={`${siteConfig.cityName}駅前の桜とペデストリアンデッキのイラスト`}
         fill
         priority
-        className="object-cover"
+        className="object-cover object-[center_45%]"
         sizes="100vw"
         quality={85}
       />
       <div className="absolute bottom-[30vh] left-0 right-0 py-4">
         <Container>
-          <p className="font-bold text-xl md:text-2xl leading-relaxed">
+          {/* 背景のイラストの線と重なっても読めるよう、半透明の白い帯を敷く */}
+          <p className="inline-block rounded-xl bg-white/80 px-3 py-2 font-bold text-lg sm:text-xl md:text-2xl leading-relaxed sm:px-4">
             いま{siteConfig.councilName}で議論されていること <br />
             やさしい言葉で説明します
           </p>
