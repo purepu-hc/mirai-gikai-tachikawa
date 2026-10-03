@@ -22,6 +22,46 @@ export const siteConfig = {
   /** 議案・議決結果の一覧ページ */
   councilBillsDetailUrl:
     "https://www.city.tachikawa.lg.jp/shigikai/gian/1007177.html",
+  /** 各定例会・臨時会の概要（年ごとの会期の一覧） */
+  councilSessionsUrl:
+    "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/index.html",
+  /** 請願と陳情の提出方法（市議会の公式ページ） */
+  petitionGuideUrl:
+    "https://www.city.tachikawa.lg.jp/shigikai/gian/1007179.html",
+  /**
+   * 定例会の枠（トップページの年間パネル用）。例年の開催月と主な審議内容。
+   * 出典：令和7年第4回・令和8年第1〜3回定例会の日程表
+   */
+  regularSessionSlots: [
+    {
+      number: 1,
+      monthsLabel: "2〜3月",
+      startMonth: 2,
+      endMonth: 3,
+      description: "新しい年度の予算を決める",
+    },
+    {
+      number: 2,
+      monthsLabel: "5月",
+      startMonth: 5,
+      endMonth: 5,
+      description: "条例の改正や補正予算などを審議",
+    },
+    {
+      number: 3,
+      monthsLabel: "9〜10月",
+      startMonth: 9,
+      endMonth: 10,
+      description: "前の年度の決算や補正予算などを審議",
+    },
+    {
+      number: 4,
+      monthsLabel: "11〜12月",
+      startMonth: 11,
+      endMonth: 12,
+      description: "年内最後の議案を審議",
+    },
+  ],
   twitterHashtag: "みらい議会立川市", // # なし
   externalLinks: {
     /** 問題報告先（運営者の X アカウント） */

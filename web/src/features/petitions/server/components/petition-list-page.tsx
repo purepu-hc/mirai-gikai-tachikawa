@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { siteConfig } from "@/config/site.config";
@@ -23,6 +24,15 @@ export function PetitionListPage({ petitions }: PetitionListPageProps) {
           <br />
           「請願」は議員の紹介を受けて出されるもの、「陳情」は議員の紹介なしで出されるものです。どちらも委員会で審査され、本会議で「採択」か「不採択」かが決まります。
         </p>
+        <a
+          href={siteConfig.petitionGuideUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="flex w-fit items-center gap-1 text-sm font-bold text-primary-accent hover:underline"
+        >
+          請願・陳情の出し方（{siteConfig.councilName}のページ）
+          <ExternalLink className="h-4 w-4" aria-hidden="true" />
+        </a>
       </div>
 
       {groups.length === 0 ? (
