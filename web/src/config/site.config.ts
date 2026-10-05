@@ -64,8 +64,8 @@ export const siteConfig = {
   ],
   twitterHashtag: "みらい議会立川市", // # なし
   externalLinks: {
-    /** 問題報告先（運営者の X アカウント） */
-    report: "https://x.com/pure_hotcook",
+    /** 問題報告先（みらい議会＠立川市の X アカウント） */
+    report: "https://x.com/miraigikai_tckw",
     aboutNote: "",
     donation: "https://team-mir.ai/support/donation",
     teamAbout: "https://team-mir.ai/about",
@@ -89,7 +89,7 @@ export const siteConfig = {
    */
   operator: {
     name: "ぷれ" as string,
-    contactUrl: "https://x.com/pure_hotcook" as string,
+    contactUrl: "https://x.com/miraigikai_tckw" as string,
     /** 利用規約の準拠法・管轄裁判所（第一審の専属的合意管轄） */
     jurisdiction: "東京地方裁判所立川支部" as string,
   },

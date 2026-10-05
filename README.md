@@ -5,8 +5,8 @@
 ## 注意事項
 - **これは政党チームみらいが運営しているものではありません。**
 - **立川市・立川市議会の公式サービスではありません。** 市民有志による非公式プロジェクトです。
-- 運営: ぷれ（[@pure_hotcook](https://x.com/pure_hotcook)）
-- 不具合や気になる点は、党公式や市ではなく、運営者の X（[@pure_hotcook](https://x.com/pure_hotcook)）までお寄せください。
+- 運営: ぷれ（[@miraigikai_tckw](https://x.com/miraigikai_tckw)）
+- 不具合や気になる点は、党公式や市ではなく、みらい議会＠立川市の X（[@miraigikai_tckw](https://x.com/miraigikai_tckw)）までお寄せください。
 - 本家「みらい議会」: https://gikai.team-mir.ai/
 
 ## 出典とライセンス
