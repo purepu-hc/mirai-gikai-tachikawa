@@ -63,6 +63,18 @@ export const siteConfig = {
     },
   ],
   twitterHashtag: "みらい議会立川市", // # なし
+  /** 議案詳細ページ「会派の賛否」カードの注記（空文字列なら表示しない） */
+  factionStances: {
+    /** 賛否の出典 */
+    sourceNote:
+      "会派ごとの賛否は、立川市議会の広報紙「たちかわ市議会便り」の「各議案等に対する賛否」をもとに掲載しています。会派は議決した当時のものです。" as string,
+    /** 請願・陳情での「賛成」「反対」の意味 */
+    petitionNote:
+      "請願・陳情では、「賛成」は採択に賛成、「反対」は採択に反対（不採択）を表します。" as string,
+    /** 賛否がまだ無い議案（審議前）に表示する文 */
+    pendingNote:
+      "議決後に、市議会の公表資料をもとに各会派の賛否を掲載します。" as string,
+  },
   externalLinks: {
     /** 問題報告先（みらい議会＠立川市の X アカウント） */
     report: "https://x.com/miraigikai_tckw",

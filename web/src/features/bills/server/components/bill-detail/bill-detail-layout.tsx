@@ -89,6 +89,10 @@ export async function BillDetailLayout({
             <FactionStanceCard
               stances={bill.faction_stances ?? []}
               billStatus={bill.status}
+              isPetition={bill.bill_type === "petition"}
+              sourceNote={siteConfig.factionStances.sourceNote}
+              petitionNote={siteConfig.factionStances.petitionNote}
+              pendingNote={siteConfig.factionStances.pendingNote}
             />
           </div>
         )}

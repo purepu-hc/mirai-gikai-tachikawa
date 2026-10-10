@@ -58,11 +58,23 @@ function FactionStanceRow({ stance }: FactionStanceRowProps) {
 interface FactionStanceCardProps {
   stances: FactionStance[];
   billStatus?: BillStatusEnum;
+  /** 請願・陳情のとき true（賛成・反対の意味の注記を出す） */
+  isPetition?: boolean;
+  /** 賛否の出典などの注記 */
+  sourceNote?: string;
+  /** 請願・陳情での賛成・反対の意味の注記 */
+  petitionNote?: string;
+  /** 賛否がまだ無い議案に表示する文 */
+  pendingNote?: string;
 }
 
 export function FactionStanceCard({
   stances,
   billStatus,
+  isPetition = false,
+  sourceNote,
+  petitionNote,
+  pendingNote = "議案上程後に各会派の賛否を表明します。",
 }: FactionStanceCardProps) {
   const isPreparing = billStatus === "preparing";
 
@@ -76,7 +88,7 @@ export function FactionStanceCard({
       <div className="rounded-2xl border bg-white px-6 py-2">
         {isPreparing && stances.length === 0 ? (
           <p className="py-6 text-center text-sm text-gray-500">
-            議案上程後に各会派の賛否を表明します。
+            {pendingNote}
           </p>
         ) : (
           <div>
@@ -86,6 +98,25 @@ export function FactionStanceCard({
           </div>
         )}
       </div>
+      {stances.length > 0 && (
+        <FactionStanceNotes
+          notes={[isPetition ? petitionNote : undefined, sourceNote]}
+        />
+      )}
     </>
+  );
+}
+
+function FactionStanceNotes({ notes }: { notes: (string | undefined)[] }) {
+  const visible = notes.filter((note): note is string => Boolean(note));
+  if (visible.length === 0) {
+    return null;
+  }
+  return (
+    <div className="mt-3 flex flex-col gap-1 text-xs leading-relaxed text-gray-500">
+      {visible.map((note) => (
+        <p key={note}>※{note}</p>
+      ))}
+    </div>
   );
 }
