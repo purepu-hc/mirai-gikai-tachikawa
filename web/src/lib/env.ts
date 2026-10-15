@@ -1,3 +1,5 @@
+import { resolveSiteUrl } from "./site-url";
+
 /**
  * 環境変数の設定
  * アプリケーション全体で使用する環境変数を一元管理
@@ -55,7 +57,12 @@ if (
 }
 
 export const env = {
-  webUrl: process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000",
+  webUrl: resolveSiteUrl({
+    NEXT_PUBLIC_WEB_URL: process.env.NEXT_PUBLIC_WEB_URL,
+    VERCEL_ENV: process.env.VERCEL_ENV,
+    VERCEL_PROJECT_PRODUCTION_URL: process.env.VERCEL_PROJECT_PRODUCTION_URL,
+    VERCEL_URL: process.env.VERCEL_URL,
+  }),
   adminUrl: process.env.ADMIN_URL || "http://localhost:3001",
   supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
   supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,

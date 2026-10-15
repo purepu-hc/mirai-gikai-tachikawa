@@ -5,6 +5,8 @@
  */
 export const siteConfig = {
   siteName: "みらい議会＠立川市",
+  /** 検索結果のサイト名の候補（Google の構造化データ alternateName） */
+  siteAlternateNames: ["みらい議会 立川市", "みらい議会（立川市）"],
   siteDescription:
     "立川市議会で今どんな議案が検討されているか、わかりやすく伝えるプラットフォームです",
   cityName: "立川市",
