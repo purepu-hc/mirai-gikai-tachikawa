@@ -2,8 +2,8 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Lexend_Giga, Noto_Sans_JP } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
-import { siteConfig } from "@/config/site.config";
 import type { ReactNode } from "react";
+import { siteConfig } from "@/config/site.config";
 import { env } from "@/lib/env";
 
 const notoSansJP = Noto_Sans_JP({
@@ -29,6 +29,7 @@ const ogImage = {
 export const metadata: Metadata = {
   metadataBase: new URL(env.webUrl),
   title: siteConfig.siteName,
+  applicationName: siteConfig.siteName,
   description: siteConfig.siteDescription,
   keywords: [...siteConfig.keywords],
   icons: {

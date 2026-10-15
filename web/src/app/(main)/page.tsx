@@ -1,7 +1,8 @@
+import type { Metadata } from "next";
 import { Container } from "@/components/layouts/container";
+import { WebsiteJsonLd } from "@/components/seo/website-json-ld";
 import { About } from "@/components/top/about";
 import { ExploreNav } from "@/components/top/explore-nav";
-
 import { Hero } from "@/components/top/hero";
 import { TeamMirai } from "@/components/top/team-mirai";
 import { siteConfig } from "@/config/site.config";
@@ -18,6 +19,11 @@ import { CurrentCouncilSession } from "@/features/council-sessions/client/compon
 import { YearSessionPanel } from "@/features/council-sessions/server/components/year-session-panel";
 import { getCurrentCouncilSession } from "@/features/council-sessions/server/loaders/get-current-council-session";
 import { getJapanTime } from "@/lib/utils/date";
+
+/** トップページの正規URL（検索エンジン向け。デプロイごとのURLと区別する） */
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default async function Home() {
   const { billsByTag, featuredBills, activeSessionData, activeSessionSlug } =
@@ -42,6 +48,7 @@ export default async function Home() {
 
   return (
     <>
+      <WebsiteJsonLd />
       <Hero />
 
       {/* 本日の定例会セクション */}

@@ -6,9 +6,7 @@ import { env } from "@/lib/env";
 import { routes } from "@/lib/routes";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : env.webUrl;
+  const baseUrl = env.webUrl;
 
   const [bills, petitions, committees] = await Promise.all([
     getBills(),
