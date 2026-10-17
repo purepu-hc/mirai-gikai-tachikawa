@@ -11,6 +11,7 @@ Supabase の SQL Editor で流した順に並べています。書き方のル�
 | `02-bill-contents-20bills.sql` | 解説：議案第95〜106号、第108〜115号 |
 | `03-giin-teishutsu-and-petition-contents.sql` | 議員提出議案第6〜8号の取り込みと解説、請願・陳情4件の解説 |
 | `04-final-results.sql` | 最終日（10月2日）の議決結果を反映（審議の状況のみ。市のページ 10月14日更新分） |
+| `05-giin-teishutsu-6-contents.sql` | 議員提出議案第6号：市のPDFリンク修正（10月16日）を受けて、PDFリンクと解説を反映 |
 
 いずれも何度流しても同じ結果になります（`UPDATE` と `ON CONFLICT`）。
 
