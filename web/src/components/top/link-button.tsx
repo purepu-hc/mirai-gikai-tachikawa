@@ -26,7 +26,7 @@ export function LinkButton({
     <Button
       asChild
       variant="outline"
-      className="w-fit rounded-full px-6 py-3 h-auto"
+      className="w-fit max-w-full whitespace-normal rounded-full px-6 py-3 h-auto"
     >
       <a href={href} target={target} rel={rel}>
         <Image
@@ -36,7 +36,7 @@ export function LinkButton({
           height={icon.height}
           className="flex-shrink-0"
         />
-        <span className="text-[15px] font-bold">{children}</span>
+        <span className="min-w-0 text-[15px] font-bold">{children}</span>
         <Image
           src="/icons/arrow-right.svg"
           alt=""
