@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { ExternalLink, Menu } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { siteConfig } from "@/config/site.config";
 import type { CouncilSession } from "@/features/council-sessions/shared/types";
 import { routes } from "@/lib/routes";
 import { RubyToggle } from "@/lib/rubyful";
@@ -82,6 +83,17 @@ export function HamburgerMenu({ sessions }: HamburgerMenuProps) {
                 >
                   定例会・臨時会の一覧
                 </Link>
+              </li>
+              <li>
+                <a
+                  href={siteConfig.councilMembersUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-sm py-1 hover:underline"
+                >
+                  議員名簿（市議会サイト）
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                </a>
               </li>
             </ul>
           </div>

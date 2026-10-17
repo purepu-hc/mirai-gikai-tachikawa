@@ -27,6 +27,9 @@ export const siteConfig = {
   /** 各定例会・臨時会の概要（年ごとの会期の一覧） */
   councilSessionsUrl:
     "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/index.html",
+  /** 議員名簿（市議会の公式ページ。議員一覧は自前で持たず、ここへ案内する） */
+  councilMembersUrl:
+    "https://www.city.tachikawa.lg.jp/shigikai/shokai/1007182.html",
   /** 請願と陳情の提出方法（市議会の公式ページ） */
   petitionGuideUrl:
     "https://www.city.tachikawa.lg.jp/shigikai/gian/1007179.html",
