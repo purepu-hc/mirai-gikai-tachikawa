@@ -48,8 +48,11 @@ export function CouncilSessionBillList({
       {/* セクションヘッダー */}
       <div className="flex flex-col gap-0.5">
         <h2 className="text-[22px] font-bold text-black leading-[1.48] flex items-center gap-4">
-          {startDate.getFullYear()}年 {session.name}の提出議案
-          <span>{bills.length}件</span>
+          {/* ふりがな表示では漢字ごとに要素が分かれるため、文章は1つの span にまとめて折り返せるようにする */}
+          <span className="min-w-0">
+            {startDate.getFullYear()}年 {session.name}の提出議案
+          </span>
+          <span className="shrink-0">{bills.length}件</span>
         </h2>
         <p className="text-xs font-medium text-mirai-text">
           {sessionDescription}
