@@ -1,0 +1,36 @@
+# 依存パッケージの自動チェック（立川市版）
+# - セキュリティ修正（脆弱性アラート）は、この設定とは別に GitHub の
+#   「Dependabot security updates」を有効にすると、見つかり次第 PR が作られる
+# - ここでは、週1回の定期チェックで Next.js などの更新 PR をまとめて作る
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    target-branch: "tachikawa/develop"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    groups:
+      # Next.js と React はまとめて1つの PR にする（パッチ・マイナーのみ）
+      nextjs-react:
+        patterns:
+          - "next"
+          - "@next/*"
+          - "react"
+          - "react-dom"
+        update-types:
+          - "minor"
+          - "patch"
+      # それ以外のパッチ更新は1つの PR にまとめる
+      patch-updates:
+        update-types:
+          - "patch"
+    ignore:
+      # メジャー更新（Next.js 16 など）は手作業で計画的に行う
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
