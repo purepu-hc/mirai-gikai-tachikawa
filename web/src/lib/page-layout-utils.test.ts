@@ -5,6 +5,7 @@ import {
   isInterviewPage,
   isInterviewSection,
   isMainPage,
+  isWidePage,
 } from "./page-layout-utils";
 
 describe("isMainPage", () => {
@@ -87,5 +88,18 @@ describe("extractBillIdFromPath", () => {
 
   it("returns null for the top page", () => {
     expect(extractBillIdFromPath("/")).toBeNull();
+  });
+});
+
+describe("isWidePage", () => {
+  it("returns true for the budget pages", () => {
+    expect(isWidePage("/budget")).toBe(true);
+    expect(isWidePage("/budget/compare")).toBe(true);
+  });
+
+  it("returns false for other pages", () => {
+    expect(isWidePage("/")).toBe(false);
+    expect(isWidePage("/bills/abc-123")).toBe(false);
+    expect(isWidePage("/budgetary")).toBe(false);
   });
 });

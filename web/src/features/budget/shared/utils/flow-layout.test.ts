@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeFlowLayout, linkPath } from "./flow-layout";
+import { computeFlowLayout, flowChartWidth, linkPath } from "./flow-layout";
 
 const options = {
   width: 800,
@@ -69,5 +69,20 @@ describe("computeFlowLayout", () => {
 describe("linkPath", () => {
   it("始点と終点を結ぶ3次ベジェ曲線", () => {
     expect(linkPath(0, 10, 100, 50)).toBe("M0,10 C50,10 50,50 100,50");
+  });
+});
+
+describe("flowChartWidth", () => {
+  it("置き場所が広ければその幅になる", () => {
+    expect(flowChartWidth(1100.6, 820)).toBe(1100);
+  });
+
+  it("置き場所が狭ければ最小幅になる", () => {
+    expect(flowChartWidth(360, 820)).toBe(820);
+  });
+
+  it("幅が測れないときは最小幅になる", () => {
+    expect(flowChartWidth(0, 820)).toBe(820);
+    expect(flowChartWidth(Number.NaN, 820)).toBe(820);
   });
 });

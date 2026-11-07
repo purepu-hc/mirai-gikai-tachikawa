@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import {
   revenueFillClass,
   revenueStrokeClass,
@@ -7,15 +8,18 @@ import {
 import {
   computeFlowLayout,
   type FlowInput,
+  flowChartWidth,
   linkPath,
 } from "../../shared/utils/flow-layout";
 import { formatOku, formatPercent } from "../../shared/utils/format-yen";
+import { useElementWidth } from "../hooks/use-element-width";
 
-const WIDTH = 860;
+/** これより狭いとラベルが重なるので、狭い画面では横スクロールにする */
+const MIN_WIDTH = 820;
 const HEIGHT = 1060;
 const NODE_WIDTH = 14;
 const LEFT_X = 300;
-const RIGHT_X = WIDTH - 175;
+const RIGHT_LABEL_SPACE = 175;
 
 interface BudgetFlowChartProps {
   /** 歳入の款（id は款の番号） */
@@ -40,6 +44,13 @@ export function BudgetFlowChart({
   onSelect,
   inputDescriptions,
 }: BudgetFlowChartProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  // 置き場所の幅に合わせて図を広げる（文字は拡大せず、線の間を広くする）
+  const WIDTH = flowChartWidth(
+    useElementWidth(wrapperRef, MIN_WIDTH),
+    MIN_WIDTH
+  );
+  const RIGHT_X = WIDTH - RIGHT_LABEL_SPACE;
   const layout = computeFlowLayout(inputs, outputs, "一般会計", {
     width: WIDTH,
     height: HEIGHT,
@@ -51,10 +62,12 @@ export function BudgetFlowChart({
   const cx = layout.center.x;
 
   return (
-    <div className="overflow-x-auto">
+    <div ref={wrapperRef} className="overflow-x-auto">
       <svg
+        width={WIDTH}
+        height={HEIGHT}
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-        className="min-w-[820px] w-full h-auto"
+        className="block"
         role="img"
         aria-label="立川市一般会計の、入ってくるお金から使い道への流れ図"
       >

@@ -129,3 +129,12 @@ export function linkPath(x0: number, y0: number, x1: number, y1: number) {
   const mx = (x0 + x1) / 2;
   return `M${x0},${y0} C${mx},${y0} ${mx},${y1} ${x1},${y1}`;
 }
+
+/**
+ * 流れ図の横幅。置き場所の幅いっぱいに広げるが、
+ * ラベルが重ならないよう最小幅より狭くはしない（狭い画面では横スクロール）。
+ */
+export function flowChartWidth(containerWidth: number, minWidth: number) {
+  if (!Number.isFinite(containerWidth) || containerWidth <= 0) return minWidth;
+  return Math.max(minWidth, Math.floor(containerWidth));
+}
