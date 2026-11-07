@@ -51,6 +51,10 @@ export const routes = {
   sessions: () => "/sessions" as const,
   sessionBills: (slug: string) => `/sessions/${slug}/bills` as const,
 
+  // ── 予算の見える化 ────────────────────────────────
+  budget: () => "/budget" as const,
+  budgetCompare: () => "/budget/compare" as const,
+
   // ── その他 ────────────────────────────────────────
   faq: () => "/faq" as const,
 } as const;

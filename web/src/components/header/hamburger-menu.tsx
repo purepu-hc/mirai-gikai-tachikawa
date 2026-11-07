@@ -78,6 +78,14 @@ export function HamburgerMenu({ sessions }: HamburgerMenuProps) {
               </li>
               <li>
                 <Link
+                  href={routes.budget() as Route}
+                  className="block text-sm py-1 hover:underline"
+                >
+                  市のお金（予算）
+                </Link>
+              </li>
+              <li>
+                <Link
                   href={routes.sessions() as Route}
                   className="block text-sm py-1 hover:underline"
                 >

@@ -6,6 +6,7 @@ import {
   type LucideIcon,
   Mail,
   Users,
+  Wallet,
 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
@@ -53,6 +54,12 @@ export function ExploreNav({ activeSessionSlug }: ExploreNavProps) {
       label: "請願・陳情",
       description: "市民からの要望と結果を見る",
       Icon: Mail,
+    },
+    {
+      href: routes.budget(),
+      label: "市のお金（予算）",
+      description: "予算の流れと、多摩26市とのくらべ",
+      Icon: Wallet,
     },
     {
       href: routes.sessions(),
