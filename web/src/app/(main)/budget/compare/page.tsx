@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function BudgetComparePage() {
   return (
-    <Container className="pt-24 pb-12 md:pt-12">
+    <Container className="pt-24 pb-12 md:pt-12 pc:max-w-6xl">
       <BudgetCompare data={tama26 as ComparisonData} />
     </Container>
   );

@@ -27,6 +27,14 @@ export function isInterviewSection(pathname: string): boolean {
   return /\/bills\/[^/]+\/interview(\/|$)/.test(pathname);
 }
 
+/**
+ * 横に広く表示するページかどうかを判定。
+ * 予算の見える化（/budget 以下）は図が大きいため、PCでは幅を広げる。
+ */
+export function isWidePage(pathname: string): boolean {
+  return pathname === "/budget" || pathname.startsWith("/budget/");
+}
+
 /** インタビューページからbillIdを抽出 */
 export function extractBillIdFromPath(pathname: string): string | null {
   const match = pathname.match(/\/bills\/([^/]+)/);
