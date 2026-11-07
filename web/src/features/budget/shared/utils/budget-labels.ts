@@ -4,25 +4,69 @@
  */
 
 /** 歳入の款を、似た種類ごとに色分けするためのグループ（色だけに使う） */
-export const REVENUE_COLOR_GROUPS: { className: string; codes: number[] }[] = [
-  { className: "fill-budget-tax", codes: [1] },
-  { className: "fill-budget-kuni", codes: [16] },
-  { className: "fill-budget-to", codes: [17] },
+// Tailwind は文字列を組み立てたクラス名を生成しないため、
+// 線用の stroke クラスも省略せずに書いておく。
+export const REVENUE_COLOR_GROUPS: {
+  className: string;
+  strokeClassName: string;
+  codes: number[];
+}[] = [
+  {
+    className: "fill-budget-tax",
+    strokeClassName: "stroke-budget-tax",
+    codes: [1],
+  },
+  {
+    className: "fill-budget-kuni",
+    strokeClassName: "stroke-budget-kuni",
+    codes: [16],
+  },
+  {
+    className: "fill-budget-to",
+    strokeClassName: "stroke-budget-to",
+    codes: [17],
+  },
   {
     className: "fill-budget-kofu",
+    strokeClassName: "stroke-budget-kofu",
     codes: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
   },
-  { className: "fill-budget-kikin", codes: [20] },
-  { className: "fill-budget-shiyo", codes: [15] },
-  { className: "fill-budget-sai", codes: [23] },
-  { className: "fill-budget-etc", codes: [14, 18, 19, 21, 22] },
+  {
+    className: "fill-budget-kikin",
+    strokeClassName: "stroke-budget-kikin",
+    codes: [20],
+  },
+  {
+    className: "fill-budget-shiyo",
+    strokeClassName: "stroke-budget-shiyo",
+    codes: [15],
+  },
+  {
+    className: "fill-budget-sai",
+    strokeClassName: "stroke-budget-sai",
+    codes: [23],
+  },
+  {
+    className: "fill-budget-etc",
+    strokeClassName: "stroke-budget-etc",
+    codes: [14, 18, 19, 21, 22],
+  },
 ];
 
-export function revenueFillClass(code: number): string {
+function revenueGroup(code: number) {
   return (
-    REVENUE_COLOR_GROUPS.find((g) => g.codes.includes(code))?.className ??
-    "fill-budget-etc"
+    REVENUE_COLOR_GROUPS.find((g) => g.codes.includes(code)) ??
+    REVENUE_COLOR_GROUPS[REVENUE_COLOR_GROUPS.length - 1]
   );
+}
+
+export function revenueFillClass(code: number): string {
+  return revenueGroup(code).className;
+}
+
+/** 流れ図の線の色（四角と同じ色の stroke クラス） */
+export function revenueStrokeClass(code: number): string {
+  return revenueGroup(code).strokeClassName;
 }
 
 /** 歳入の款のひとこと説明（款の番号ごと） */
