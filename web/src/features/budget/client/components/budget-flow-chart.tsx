@@ -1,6 +1,9 @@
 "use client";
 
-import { revenueFillClass } from "../../shared/utils/budget-labels";
+import {
+  revenueFillClass,
+  revenueStrokeClass,
+} from "../../shared/utils/budget-labels";
 import {
   computeFlowLayout,
   type FlowInput,
@@ -57,10 +60,9 @@ export function BudgetFlowChart({
       >
         {layout.links.map((link) => {
           const fromLeft = link.targetId === "center";
-          const fill = fromLeft
-            ? revenueFillClass(Number(link.sourceId))
-            : "fill-primary";
-          const strokeClass = fill.replace("fill-", "stroke-");
+          const strokeClass = fromLeft
+            ? revenueStrokeClass(Number(link.sourceId))
+            : "stroke-primary";
           const d = fromLeft
             ? linkPath(LEFT_X + NODE_WIDTH, link.ySource, cx, link.yTarget)
             : linkPath(cx + NODE_WIDTH, link.ySource, RIGHT_X, link.yTarget);
