@@ -79,6 +79,18 @@
   --color-mirai-border-light: #b1b1b1;
   --color-mirai-border-muted: #bebcbc;
 
+  /* Budget visualization (予算の見える化) */
+  --color-budget-tax: #2f6f8f;
+  --color-budget-kuni: #5b8fa8;
+  --color-budget-to: #7aa7a0;
+  --color-budget-kofu: #a3b58a;
+  --color-budget-kikin: #c9a35b;
+  --color-budget-shiyo: #b67a5c;
+  --color-budget-sai: #9a6f99;
+  --color-budget-etc: #8c938d;
+  --color-budget-dot: #9aa8a0;
+  --color-budget-highlight: #b4762a;
+
   /* Stance semantic colors */
   --color-stance-for-bg: #eef5e4;
   --color-stance-for-badge-start: #e8f1d6;
