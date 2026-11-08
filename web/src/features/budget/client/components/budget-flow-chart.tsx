@@ -10,13 +10,19 @@ import {
   type FlowInput,
   flowChartWidth,
   linkPath,
+  spreadLabels,
 } from "../../shared/utils/flow-layout";
 import { formatOku, formatPercent } from "../../shared/utils/format-yen";
 import { useElementWidth } from "../hooks/use-element-width";
 
 /** これより狭いとラベルが重なるので、狭い画面では横スクロールにする */
 const MIN_WIDTH = 820;
-const HEIGHT = 1060;
+/** 金額を描く高さ（いちばん長い列がこの高さになる） */
+const HEIGHT = 900;
+/** 上の端のラベルが切れないための余白 */
+const MARGIN_Y = 12;
+/** ラベル同士が重ならない最小の間隔（文字の高さ＋α） */
+const LABEL_GAP = 15;
 const NODE_WIDTH = 14;
 const LEFT_X = 300;
 const RIGHT_LABEL_SPACE = 175;
@@ -55,119 +61,146 @@ export function BudgetFlowChart({
     width: WIDTH,
     height: HEIGHT,
     nodeWidth: NODE_WIDTH,
-    padding: 13,
+    // すき間を小さくして、列の長さがほぼ金額どおりになるようにする
+    padding: 3,
     leftX: LEFT_X,
     rightX: RIGHT_X,
   });
   const cx = layout.center.x;
+  const mid = (n: { y0: number; y1: number }) => (n.y0 + n.y1) / 2;
+  const leftLabelY = spreadLabels(layout.left.map(mid), LABEL_GAP);
+  const rightLabelY = spreadLabels(layout.right.map(mid), LABEL_GAP);
+  const svgHeight =
+    Math.max(
+      HEIGHT,
+      leftLabelY[leftLabelY.length - 1] ?? 0,
+      rightLabelY[rightLabelY.length - 1] ?? 0
+    ) +
+    MARGIN_Y * 2;
 
   return (
     <div ref={wrapperRef} className="overflow-x-auto">
       <svg
         width={WIDTH}
-        height={HEIGHT}
-        viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+        height={svgHeight}
+        viewBox={`0 0 ${WIDTH} ${svgHeight}`}
         className="block"
         role="img"
         aria-label="立川市一般会計の、入ってくるお金から使い道への流れ図"
       >
-        {layout.links.map((link) => {
-          const fromLeft = link.targetId === "center";
-          const strokeClass = fromLeft
-            ? revenueStrokeClass(Number(link.sourceId))
-            : "stroke-primary";
-          const d = fromLeft
-            ? linkPath(LEFT_X + NODE_WIDTH, link.ySource, cx, link.yTarget)
-            : linkPath(cx + NODE_WIDTH, link.ySource, RIGHT_X, link.yTarget);
-          return (
-            <path
-              key={`${link.sourceId}-${link.targetId}`}
-              d={d}
-              className={`${strokeClass} fill-none opacity-30`}
-              strokeWidth={Math.max(1, link.width)}
-            />
-          );
-        })}
-        <rect
-          x={cx}
-          y={layout.center.y0}
-          width={NODE_WIDTH}
-          height={layout.center.y1 - layout.center.y0}
-          className="fill-primary-accent"
-          rx={2}
-        />
-        {layout.left.map((node) => (
-          <g key={`in-${node.id}`}>
-            <rect
-              x={node.x}
-              y={node.y0}
-              width={NODE_WIDTH}
-              height={node.y1 - node.y0}
-              className={revenueFillClass(Number(node.id))}
-              rx={2}
-            >
-              <title>
-                {`${node.label}：${formatOku(node.value)}（${formatPercent(node.value, total)}）${
-                  inputDescriptions[node.id]
-                    ? `\n${inputDescriptions[node.id]}`
-                    : ""
-                }`}
-              </title>
-            </rect>
-            <text
-              x={node.x - 6}
-              y={(node.y0 + node.y1) / 2}
-              dy="0.35em"
-              textAnchor="end"
-              className="fill-mirai-text text-[12px]"
-            >
-              {`${node.label}　${formatOku(node.value)}`}
-            </text>
-          </g>
-        ))}
-        {layout.right.map((node) => {
-          const code = Number(node.id);
-          const selected = selectedCode === code;
-          return (
-            <g
-              key={`out-${node.id}`}
-              role="button"
-              tabIndex={0}
-              aria-label={`${node.label}の中身を見る`}
-              aria-pressed={selected}
-              className="cursor-pointer focus:outline-none"
-              onClick={() => onSelect(code)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  onSelect(code);
-                }
-              }}
-            >
+        <g transform={`translate(0 ${MARGIN_Y})`}>
+          {layout.links.map((link) => {
+            const fromLeft = link.targetId === "center";
+            const strokeClass = fromLeft
+              ? revenueStrokeClass(Number(link.sourceId))
+              : "stroke-primary";
+            const d = fromLeft
+              ? linkPath(LEFT_X + NODE_WIDTH, link.ySource, cx, link.yTarget)
+              : linkPath(cx + NODE_WIDTH, link.ySource, RIGHT_X, link.yTarget);
+            return (
+              <path
+                key={`${link.sourceId}-${link.targetId}`}
+                d={d}
+                className={`${strokeClass} fill-none opacity-30`}
+                strokeWidth={Math.max(1, link.width)}
+              />
+            );
+          })}
+          <rect
+            x={cx}
+            y={layout.center.y0}
+            width={NODE_WIDTH}
+            height={layout.center.y1 - layout.center.y0}
+            className="fill-primary-accent"
+            rx={2}
+          />
+          {layout.left.map((node, i) => (
+            <g key={`in-${node.id}`}>
+              {leftLabelY[i] - mid(node) > 1 && (
+                <polyline
+                  points={`${node.x - 2},${mid(node)} ${node.x - 5},${leftLabelY[i]}`}
+                  className="stroke-mirai-border fill-none"
+                  strokeWidth={1}
+                />
+              )}
               <rect
                 x={node.x}
                 y={node.y0}
                 width={NODE_WIDTH}
-                height={Math.max(1.5, node.y1 - node.y0)}
-                className={`fill-primary ${selected ? "stroke-budget-highlight" : ""}`}
-                strokeWidth={selected ? 3 : 0}
+                height={node.y1 - node.y0}
+                className={revenueFillClass(Number(node.id))}
                 rx={2}
               >
                 <title>
-                  {`${node.label}：${formatOku(node.value)}（${formatPercent(node.value, total)}）`}
+                  {`${node.label}：${formatOku(node.value)}（${formatPercent(node.value, total)}）${
+                    inputDescriptions[node.id]
+                      ? `\n${inputDescriptions[node.id]}`
+                      : ""
+                  }`}
                 </title>
               </rect>
               <text
-                x={node.x + NODE_WIDTH + 6}
-                y={(node.y0 + node.y1) / 2}
+                x={node.x - 6}
+                y={leftLabelY[i]}
                 dy="0.35em"
-                className={`fill-mirai-text text-[12px] ${selected ? "font-bold" : ""}`}
+                textAnchor="end"
+                className="fill-mirai-text text-[12px]"
               >
                 {`${node.label}　${formatOku(node.value)}`}
               </text>
             </g>
-          );
-        })}
+          ))}
+          {layout.right.map((node, i) => {
+            const code = Number(node.id);
+            const selected = selectedCode === code;
+            return (
+              <g
+                key={`out-${node.id}`}
+                role="button"
+                tabIndex={0}
+                aria-label={`${node.label}の中身を見る`}
+                aria-pressed={selected}
+                className="cursor-pointer focus:outline-none"
+                onClick={() => onSelect(code)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelect(code);
+                  }
+                }}
+              >
+                <rect
+                  x={node.x}
+                  y={node.y0}
+                  width={NODE_WIDTH}
+                  height={Math.max(1.5, node.y1 - node.y0)}
+                  className={`fill-primary ${selected ? "stroke-budget-highlight" : ""}`}
+                  strokeWidth={selected ? 3 : 0}
+                  rx={2}
+                >
+                  <title>
+                    {`${node.label}：${formatOku(node.value)}（${formatPercent(node.value, total)}）`}
+                  </title>
+                </rect>
+                {rightLabelY[i] - mid(node) > 1 && (
+                  <polyline
+                    points={`${node.x + NODE_WIDTH + 2},${mid(node)} ${node.x + NODE_WIDTH + 5},${rightLabelY[i]}`}
+                    className="stroke-mirai-border fill-none"
+                    strokeWidth={1}
+                  />
+                )}
+                <text
+                  x={node.x + NODE_WIDTH + 6}
+                  y={rightLabelY[i]}
+                  dy="0.35em"
+                  className={`fill-mirai-text text-[12px] ${selected ? "font-bold" : ""}`}
+                >
+                  {`${node.label}　${formatOku(node.value)}`}
+                </text>
+              </g>
+            );
+          })}
+        </g>
       </svg>
     </div>
   );

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { computeFlowLayout, flowChartWidth, linkPath } from "./flow-layout";
+import {
+  computeFlowLayout,
+  flowChartWidth,
+  linkPath,
+  spreadLabels,
+} from "./flow-layout";
 
 const options = {
   width: 800,
@@ -48,6 +53,17 @@ describe("computeFlowLayout", () => {
     }
   });
 
+  it("3列とも上端が0にそろう", () => {
+    expect(layout.left[0].y0).toBe(0);
+    expect(layout.center.y0).toBe(0);
+    expect(layout.right[0].y0).toBe(0);
+  });
+
+  it("中央の列の太さは、入ってくる線の合計と同じ", () => {
+    const first = layout.links.find((l) => l.targetId === "center");
+    expect(first?.yTarget).toBeCloseTo((first?.width ?? 0) / 2);
+  });
+
   it("小さい値にも最小の高さを確保する", () => {
     const l = computeFlowLayout(
       [
@@ -84,5 +100,19 @@ describe("flowChartWidth", () => {
   it("幅が測れないときは最小幅になる", () => {
     expect(flowChartWidth(0, 820)).toBe(820);
     expect(flowChartWidth(Number.NaN, 820)).toBe(820);
+  });
+});
+
+describe("spreadLabels", () => {
+  it("間隔が足りていればそのままの位置", () => {
+    expect(spreadLabels([0, 20, 50], 14)).toEqual([0, 20, 50]);
+  });
+
+  it("近すぎるラベルは下へずらす", () => {
+    expect(spreadLabels([0, 3, 6, 100], 14)).toEqual([0, 14, 28, 100]);
+  });
+
+  it("ずらしが後ろへ連鎖する", () => {
+    expect(spreadLabels([0, 2, 20], 14)).toEqual([0, 14, 28]);
   });
 });

@@ -83,7 +83,8 @@ export function computeFlowLayout(
   const left = stack(inputs, options.leftX, 0, scale, options.padding, minH);
   const right = stack(outputs, options.rightX, 0, scale, options.padding, minH);
   const centerH = total * scale;
-  const centerTop = (options.height - centerH) / 2;
+  // 3列とも上端（0）をそろえ、入りと出の量をそのまま比べられるようにする
+  const centerTop = 0;
   const centerX = (options.leftX + options.rightX) / 2;
   const center: FlowNode = {
     id: "center",
@@ -137,4 +138,17 @@ export function linkPath(x0: number, y0: number, x1: number, y1: number) {
 export function flowChartWidth(containerWidth: number, minWidth: number) {
   if (!Number.isFinite(containerWidth) || containerWidth <= 0) return minWidth;
   return Math.max(minWidth, Math.floor(containerWidth));
+}
+
+/**
+ * ラベルの縦位置を、重ならないように少しずつずらす。
+ * 本来の位置（四角の中央）からは下にだけずらし、順番は変えない。
+ */
+export function spreadLabels(centers: number[], minGap: number): number[] {
+  const out: number[] = [];
+  for (const c of centers) {
+    const prev = out[out.length - 1];
+    out.push(prev === undefined ? c : Math.max(c, prev + minGap));
+  }
+  return out;
 }
