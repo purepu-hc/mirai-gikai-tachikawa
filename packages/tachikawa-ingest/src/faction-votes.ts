@@ -18,6 +18,8 @@ export type FactionVoteData = {
     billNumber: string;
     title: string;
     against: string[];
+    /** 欠席した会派（会派の全員が欠席）。賛否を登録しない */
+    absent?: string[];
     comments?: Record<string, string>;
   }[];
   /**
@@ -32,6 +34,11 @@ export type FactionVoteData = {
   };
   /** 継続審査などで、この会期に表決がなかったもの（登録しない） */
   notVoted?: string[];
+  /**
+   * 全員一致の議案・請願・陳情で、出席が確認できない会派（全員一致の一括登録から外す）。
+   * 例: 賛否が分かれたものでは欠席していて、全員一致のものの採決日に出席していたか分からない会派
+   */
+  unanimousExcluded?: string[];
 };
 
 /** 入力の矛盾をチェックし、問題があればメッセージの配列を返す */
@@ -51,16 +58,29 @@ export function validateFactionVoteData(data: FactionVoteData): string[] {
     errors.push("議案・請願・陳情の番号が重複しています");
   }
   for (const s of data.split) {
+    const overlap = (s.absent ?? []).filter((n) => s.against.includes(n));
+    for (const name of overlap) {
+      errors.push(`${s.billNumber}: 会派「${name}」が反対と欠席の両方にあります`);
+    }
     if (s.against.length === 0) {
       errors.push(
         `${s.billNumber}: 反対した会派がありません（全員一致なら split に入れない）`
       );
     }
-    const mentioned = [...s.against, ...Object.keys(s.comments ?? {})];
+    const mentioned = [
+      ...s.against,
+      ...(s.absent ?? []),
+      ...Object.keys(s.comments ?? {}),
+    ];
     for (const name of mentioned) {
       if (!names.includes(name)) {
         errors.push(`${s.billNumber}: 会派「${name}」が factions にありません`);
       }
+    }
+  }
+  for (const name of data.unanimousExcluded ?? []) {
+    if (!names.includes(name)) {
+      errors.push(`unanimousExcluded: 会派「${name}」が factions にありません`);
     }
   }
   return errors;
@@ -73,10 +93,12 @@ export type FactionVoteRow = {
   comment: string | null;
 };
 
-/** 議案ごとの会派の賛否（split の議案のみ）を展開する */
+/** 議案ごとの会派の賛否（split の議案のみ）を展開する。欠席した会派は登録しない */
 export function expandSplitVotes(data: FactionVoteData): FactionVoteRow[] {
   return data.split.flatMap((s) =>
-    data.factions.map((f) => ({
+    data.factions
+      .filter((f) => !(s.absent ?? []).includes(f.name))
+      .map((f) => ({
       billNumber: s.billNumber,
       faction: f.name,
       type: s.against.includes(f.name)
@@ -107,6 +129,11 @@ export function buildFactionVoteSql(data: FactionVoteData): string {
   const notVoted = data.notVoted ?? [];
   const slug = sqlString(data.session);
   const factionList = data.factions.map((f) => sqlString(f.name)).join(", ");
+  const excluded = data.unanimousExcluded ?? [];
+  const unanimousFactionList = data.factions
+    .filter((f) => !excluded.includes(f.name))
+    .map((f) => sqlString(f.name))
+    .join(", ");
   const splitNumbers = data.split.map((s) => s.billNumber);
   const known = sqlList([
     ...splitNumbers,
@@ -193,7 +220,7 @@ export function buildFactionVoteSql(data: FactionVoteData): string {
       `-- ${label}`,
       "INSERT INTO faction_stances (bill_id, faction_id, type, comment)",
       `SELECT b.id, f.id, '${type}', NULL FROM bills b CROSS JOIN factions f`,
-      `WHERE ${inSession} AND ${where} AND f.name IN (${factionList})`,
+      `WHERE ${inSession} AND ${where} AND f.name IN (${unanimousFactionList})`,
       upsert
     );
   };
