@@ -180,3 +180,55 @@ describe("supabase/seed-tachikawa/votes/r8-2-teireikai.json", () => {
     ]);
   });
 });
+
+describe("欠席した会派", () => {
+  const withAbsent: FactionVoteData = {
+    ...base,
+    split: [
+      {
+        billNumber: "令和8年議案第2号",
+        title: "予算",
+        against: ["B党"],
+        absent: ["C'会"],
+      },
+    ],
+    unanimousExcluded: ["C'会"],
+  };
+
+  it("賛否が分かれたもので欠席した会派は登録しない", () => {
+    const rows = expandSplitVotes(withAbsent);
+    expect(rows.map((r) => r.faction)).toEqual(["A党", "B党"]);
+  });
+
+  it("unanimousExcluded の会派は全員一致の一括登録から外す", () => {
+    const sql = buildFactionVoteSql(withAbsent);
+    const bulkLines = sql
+      .split("\n")
+      .filter((l) => l.startsWith("WHERE") && l.includes("f.name IN"));
+    expect(bulkLines.length).toBeGreaterThan(0);
+    for (const line of bulkLines) {
+      expect(line).toContain("'A党', 'B党'");
+      expect(line).not.toContain("C''会");
+    }
+  });
+
+  it("反対と欠席の両方にある会派・未登録の会派を検出する", () => {
+    const data: FactionVoteData = {
+      ...base,
+      split: [
+        {
+          billNumber: "令和8年議案第2号",
+          title: "予算",
+          against: ["B党"],
+          absent: ["B党", "D党"],
+        },
+      ],
+      unanimousExcluded: ["E党"],
+    };
+    expect(validateFactionVoteData(data)).toEqual([
+      "令和8年議案第2号: 会派「B党」が反対と欠席の両方にあります",
+      "令和8年議案第2号: 会派「D党」が factions にありません",
+      "unanimousExcluded: 会派「E党」が factions にありません",
+    ]);
+  });
+});
