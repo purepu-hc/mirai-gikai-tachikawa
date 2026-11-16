@@ -40,3 +40,12 @@ pnpm --filter @mirai-gikai/tachikawa-ingest test
 ```
 
 `src/__fixtures__/` に保存した実際のページの HTML を使ってテストしています。
+
+## 原典PDFの差し替え監視
+
+`supabase/seed-tachikawa/` の `.sql`・`.json` に書かれた市のPDFを週1回取得し、前回と比べます（`.github/workflows/source_pdf_watch.yml`、毎週月曜 7:17）。
+
+- 中身が変わった（差し替え）・取得できなくなったPDFがあれば、GitHub に Issue を自動で作ります
+- 前回の取得結果は Actions のアーティファクト（`source-pdf-manifest`、90日保存）に残します。初回は基準を保存するだけで、Issue は作りません
+- 手動実行：GitHub の Actions タブ →「Source PDF Watch」→「Run workflow」
+- 手元での実行：`pnpm --filter @mirai-gikai/tachikawa-ingest watch-sources -- --out-dir tmp/watch [--prev 前回のmanifest.json]`

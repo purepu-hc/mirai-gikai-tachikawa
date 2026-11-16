@@ -9,7 +9,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "build-sql": "tsx src/cli.ts",
-    "build-votes-sql": "tsx src/cli-votes.ts"
+    "build-votes-sql": "tsx src/cli-votes.ts",
+    "watch-sources": "tsx src/cli-source-watch.ts"
   },
   "dependencies": {
     "parse5": "^8.0.0"
