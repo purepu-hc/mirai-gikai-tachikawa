@@ -40,6 +40,20 @@ export const SESSIONS: Record<string, CouncilSessionDef> = {
     isCurrent: true,
   },
   /**
+   * 出典: 令和8年第1回臨時会日程表（会期は7月21日の1日）
+   * https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1027988/1027990.html
+   */
+  "r8-1-rinjikai": {
+    name: "令和8年第1回臨時会",
+    slug: "r8-1-rinjikai",
+    startDate: "2026-07-21",
+    endDate: "2026-07-21",
+    eraYearLabel: "令和8年",
+    billListUrl:
+      "https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1027988/1028011.html",
+    isCurrent: false,
+  },
+  /**
    * 出典: 令和8年第2回定例会日程表（会期は本会議の初日から最終日）
    * https://www.city.tachikawa.lg.jp/shigikai/katsudo/1007184/1026374/1026376/1027156.html
    */
