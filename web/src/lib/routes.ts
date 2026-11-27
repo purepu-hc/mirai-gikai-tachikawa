@@ -51,6 +51,10 @@ export const routes = {
   sessions: () => "/sessions" as const,
   sessionBills: (slug: string) => `/sessions/${slug}/bills` as const,
 
+  // ── 議員 ──────────────────────────────────────────
+  members: () => "/members" as const,
+  memberDetail: (slug: string) => `/members/${slug}` as const,
+
   // ── 予算の見える化 ────────────────────────────────
   budget: () => "/budget" as const,
   budgetCompare: () => "/budget/compare" as const,
