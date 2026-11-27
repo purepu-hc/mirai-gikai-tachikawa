@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "build-sql": "tsx src/cli.ts",
     "build-votes-sql": "tsx src/cli-votes.ts",
+    "build-members-sql": "tsx src/cli-members.ts",
     "watch-sources": "tsx src/cli-source-watch.ts"
   },
   "dependencies": {
