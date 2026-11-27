@@ -11,6 +11,7 @@
     "build-sql": "tsx src/cli.ts",
     "build-votes-sql": "tsx src/cli-votes.ts",
     "build-members-sql": "tsx src/cli-members.ts",
+    "build-general-questions-sql": "tsx src/cli-general-questions.ts",
     "watch-sources": "tsx src/cli-source-watch.ts"
   },
   "dependencies": {
