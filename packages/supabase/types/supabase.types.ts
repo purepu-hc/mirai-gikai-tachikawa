@@ -317,6 +317,225 @@ export type Database = {
         }
         Relationships: []
       }
+      council_member_factions: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          faction_id: string
+          id: string
+          member_id: string
+          source_url: string | null
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          faction_id: string
+          id?: string
+          member_id: string
+          source_url?: string | null
+          start_date: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          faction_id?: string
+          id?: string
+          member_id?: string
+          source_url?: string | null
+          start_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "council_member_factions_faction_id_fkey"
+            columns: ["faction_id"]
+            isOneToOne: false
+            referencedRelation: "factions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "council_member_factions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "council_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      council_member_pledges: {
+        Row: {
+          checked_at: string
+          created_at: string
+          id: string
+          member_id: string
+          sort_order: number
+          source_type: string
+          source_url: string
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          checked_at: string
+          created_at?: string
+          id?: string
+          member_id: string
+          sort_order?: number
+          source_type: string
+          source_url: string
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          checked_at?: string
+          created_at?: string
+          id?: string
+          member_id?: string
+          sort_order?: number
+          source_type?: string
+          source_url?: string
+          text?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "council_member_pledges_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "council_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      council_member_roles: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          id: string
+          member_id: string
+          role: string
+          source_url: string | null
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          member_id: string
+          role: string
+          source_url?: string | null
+          start_date: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          member_id?: string
+          role?: string
+          source_url?: string | null
+          start_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "council_member_roles_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "council_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      council_member_terms: {
+        Row: {
+          created_at: string
+          end_reason: string | null
+          id: string
+          member_id: string
+          seat_number: number | null
+          term_end: string | null
+          term_start: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_reason?: string | null
+          id?: string
+          member_id: string
+          seat_number?: number | null
+          term_end?: string | null
+          term_start: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          end_reason?: string | null
+          id?: string
+          member_id?: string
+          seat_number?: number | null
+          term_end?: string | null
+          term_start?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "council_member_terms_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "council_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      council_members: {
+        Row: {
+          created_at: string
+          homepage_url: string | null
+          id: string
+          is_current: boolean
+          links_checked_at: string | null
+          name: string
+          name_kana: string
+          official_profile_url: string | null
+          slug: string
+          sort_order: number
+          updated_at: string
+          x_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          homepage_url?: string | null
+          id?: string
+          is_current?: boolean
+          links_checked_at?: string | null
+          name: string
+          name_kana: string
+          official_profile_url?: string | null
+          slug: string
+          sort_order?: number
+          updated_at?: string
+          x_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          homepage_url?: string | null
+          id?: string
+          is_current?: boolean
+          links_checked_at?: string | null
+          name?: string
+          name_kana?: string
+          official_profile_url?: string | null
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+          x_url?: string | null
+        }
+        Relationships: []
+      }
       council_sessions: {
         Row: {
           council_url: string | null
@@ -352,6 +571,44 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      election_blackouts: {
+        Row: {
+          created_at: string
+          election_name: string
+          end_date: string
+          id: string
+          member_id: string | null
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          election_name: string
+          end_date: string
+          id?: string
+          member_id?: string | null
+          start_date: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          election_name?: string
+          end_date?: string
+          id?: string
+          member_id?: string | null
+          start_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "election_blackouts_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "council_members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       expert_registrations: {
         Row: {
@@ -463,6 +720,120 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      general_question_items: {
+        Row: {
+          created_at: string
+          id: string
+          item_number: number
+          parent_id: string | null
+          question_id: string
+          sort_order: number
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_number: number
+          parent_id?: string | null
+          question_id: string
+          sort_order: number
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_number?: number
+          parent_id?: string | null
+          question_id?: string
+          sort_order?: number
+          text?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "general_question_items_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "general_question_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "general_question_items_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "general_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      general_questions: {
+        Row: {
+          aids: string[]
+          council_session_id: string
+          created_at: string
+          faction_label: string | null
+          id: string
+          member_id: string
+          minutes_url: string | null
+          order_number: number
+          question_date: string | null
+          question_style: string | null
+          seat_number: number | null
+          source_fetched_at: string
+          source_url: string
+          updated_at: string
+        }
+        Insert: {
+          aids?: string[]
+          council_session_id: string
+          created_at?: string
+          faction_label?: string | null
+          id?: string
+          member_id: string
+          minutes_url?: string | null
+          order_number: number
+          question_date?: string | null
+          question_style?: string | null
+          seat_number?: number | null
+          source_fetched_at: string
+          source_url: string
+          updated_at?: string
+        }
+        Update: {
+          aids?: string[]
+          council_session_id?: string
+          created_at?: string
+          faction_label?: string | null
+          id?: string
+          member_id?: string
+          minutes_url?: string | null
+          order_number?: number
+          question_date?: string | null
+          question_style?: string | null
+          seat_number?: number | null
+          source_fetched_at?: string
+          source_url?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "general_questions_council_session_id_fkey"
+            columns: ["council_session_id"]
+            isOneToOne: false
+            referencedRelation: "council_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "general_questions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "council_members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       interview_configs: {
         Row: {
