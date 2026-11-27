@@ -14,6 +14,7 @@ import {
 } from "../../shared/utils/member-status";
 import { MEIBO_URL } from "../../shared/utils/sources";
 import { BlackoutNotice, NoEvaluationNote } from "./member-notices";
+import { SeatPlan } from "./seat-plan";
 
 interface MemberListPageProps {
   members: Member[];
@@ -51,6 +52,7 @@ export function MemberListPage({
         <BlackoutNotice blackout={blackout} />
       ) : (
         <>
+          <SeatPlan members={current} today={today} />
           <NoEvaluationNote />
           <section className="flex flex-col gap-3">
             <h2 className="text-lg font-bold">
