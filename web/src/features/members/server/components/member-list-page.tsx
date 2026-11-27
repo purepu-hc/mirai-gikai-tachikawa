@@ -13,6 +13,7 @@ import {
   splitMembersByCurrent,
 } from "../../shared/utils/member-status";
 import { MEIBO_URL } from "../../shared/utils/sources";
+import { MemberLinkIcons } from "./member-link-icons";
 import { BlackoutNotice, NoEvaluationNote } from "./member-notices";
 import { SeatPlan } from "./seat-plan";
 
@@ -94,10 +95,13 @@ function MemberRows({
         const roles = date ? findRolesOn(m.roles, date) : [];
         const seat = date ? findTermOn(m.terms, date)?.seatNumber : null;
         return (
-          <li key={m.id}>
+          <li
+            key={m.id}
+            className="flex items-center gap-1 rounded-2xl border border-mirai-border bg-white pr-2 hover:bg-muted/50"
+          >
             <Link
               href={routes.memberDetail(m.slug) as Route}
-              className="flex items-center justify-between gap-3 rounded-2xl border border-mirai-border bg-white px-5 py-3 hover:bg-muted/50"
+              className="flex min-w-0 flex-1 items-center justify-between gap-2 py-3 pl-5"
             >
               <div className="flex min-w-0 flex-col gap-0.5">
                 <span className="text-xs text-mirai-text-muted">
@@ -121,6 +125,7 @@ function MemberRows({
                 aria-hidden="true"
               />
             </Link>
+            <MemberLinkIcons member={m} />
           </li>
         );
       })}

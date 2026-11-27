@@ -1,5 +1,6 @@
-import { ChevronLeft, ExternalLink } from "lucide-react";
+import { ChevronLeft, ExternalLink, House } from "lucide-react";
 import type { Route } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -177,9 +178,11 @@ function Empty({ children }: { children: ReactNode }) {
 
 function MemberLinks({ member }: { member: Member }) {
   const links = [
-    { label: "ホームページ", url: member.homepageUrl },
-    { label: "X（旧Twitter）", url: member.xUrl },
-  ].filter((l): l is { label: string; url: string } => l.url !== null);
+    { label: "ホームページ", url: member.homepageUrl, icon: "home" },
+    { label: "X（旧Twitter）", url: member.xUrl, icon: "x" },
+  ].filter(
+    (l): l is { label: string; url: string; icon: string } => l.url !== null
+  );
 
   if (links.length === 0) return <Empty>公開情報なし</Empty>;
 
@@ -194,6 +197,17 @@ function MemberLinks({ member }: { member: Member }) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 rounded-full border border-mirai-border bg-white px-4 py-2 text-sm hover:bg-muted/50"
             >
+              {l.icon === "home" ? (
+                <House className="size-4" aria-hidden="true" />
+              ) : (
+                <Image
+                  src="/icons/sns/icon_x.png"
+                  alt=""
+                  width={16}
+                  height={16}
+                  className="size-4"
+                />
+              )}
               {l.label}
               <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
             </a>
